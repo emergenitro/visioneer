@@ -74,10 +74,11 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
                         if (hands.length > 0) {
                             const keypoints = hands[0].keypoints;
+                            console.log(keypoints);
 
                             // Automatic hand framing
                             const handBox = getBoundingBox(keypoints);
-                            const zoomScale = 2; // Adjust zoom scale as needed
+                            const zoomScale = 1; // Adjust zoom scale as needed
 
                             ctx.save();
                             ctx.translate(canvas.width / 2, canvas.height / 2);
