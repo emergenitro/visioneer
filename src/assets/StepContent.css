@@ -1,0 +1,35 @@
+/* StepContent.css */
+.step-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.step-content h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.step-content p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+.hint {
+    margin-top: 30px;
+    font-style: italic;
+    color: #666;
+}
+
+.restart-button {
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background: cyan;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.restart-button:hover {
+    background: #00bcd4;
+}

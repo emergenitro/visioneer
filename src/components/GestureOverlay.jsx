@@ -8,7 +8,7 @@ function GestureOverlay({ message, stepContent }) {
         setVisible(false);
         const timer = setTimeout(() => {
             setVisible(true);
-        }, 100); // Small delay to trigger transition
+        }, 100);
 
         return () => clearTimeout(timer);
     }, [message, stepContent]);
@@ -17,7 +17,6 @@ function GestureOverlay({ message, stepContent }) {
         <div className={`gesture-overlay ${visible ? 'visible' : 'hidden'}`}>
             <div className="overlay-content">
                 <h2>{message}</h2>
-                <p>{stepContent}</p>
             </div>
         </div>
     );

@@ -1,34 +1,45 @@
-// src/components/CameraFeed.jsx
 import React, { useRef, useEffect, useState } from 'react';
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import GestureOverlay from './GestureOverlay';
-import { drawHandSkeleton } from './handUtils'; // We'll define this utility separately
+import { drawHandSkeleton } from './handUtils';
+import '../assets/CameraFeed.css'; // Import CSS for styling
 
 function CameraFeed({ onGestureDetected, currentStep, steps }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const detectorRef = useRef(null);
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loadingMessage, setLoadingMessage] = useState('Loading models...');
     const animationFrameIdRef = useRef(null);
 
-    // Gesture-specific state (optional, for more refined control)
-    const gestureStateRef = useRef({
-        lastGesture: null,
-    });
+    // Cooldown state to prevent immediate re-triggering
+    const [cooldown, setCooldown] = useState(false);
 
     useEffect(() => {
         let isMounted = true;
 
         const runHandPoseDetection = async () => {
             try {
+                setLoadingMessage('Loading models...');
+                const model = handPoseDetection.SupportedModels.MediaPipeHands;
+                const detectorConfig = {
+                    runtime: 'mediapipe',
+                    solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
+                    modelType: 'full',
+                    maxHands: 1,
+                };
+                detectorRef.current = await handPoseDetection.createDetector(model, detectorConfig);
+
+                if (!isMounted) return;
+
+                setLoadingMessage('Switching on camera...');
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: {
                         width: 640,
                         height: 480,
-                        facingMode: 'user'
-                    }
+                        facingMode: 'user',
+                    },
                 });
 
                 if (!isMounted) return;
@@ -38,33 +49,18 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                     videoRef.current.setAttribute('playsinline', '');
                     videoRef.current.setAttribute('autoplay', '');
                     videoRef.current.onloadeddata = () => {
-                        videoRef.current.play()
-                            .then(() => setIsLoading(false))
-                            .catch(err => console.error('Play error:', err));
+                        videoRef.current.play().catch((err) => console.error('Play error:', err));
                     };
                 }
 
-                const model = handPoseDetection.SupportedModels.MediaPipeHands;
-                const detectorConfig = {
-                    runtime: 'mediapipe',
-                    solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
-                    modelType: 'full',
-                };
-                detectorRef.current = await handPoseDetection.createDetector(model, detectorConfig);
-
-                const getBoundingBox = (keypoints) => {
-                    const xs = keypoints.map(point => point.x);
-                    const ys = keypoints.map(point => point.y);
-                    return {
-                        minX: Math.min(...xs),
-                        maxX: Math.max(...xs),
-                        minY: Math.min(...ys),
-                        maxY: Math.max(...ys),
-                    };
-                };
+                setLoadingMessage(null); // Models and camera are ready
 
                 const detectGestures = async () => {
-                    if (videoRef.current && videoRef.current.readyState === 4 && detectorRef.current) {
+                    if (
+                        videoRef.current &&
+                        videoRef.current.readyState === 4 &&
+                        detectorRef.current
+                    ) {
                         const hands = await detectorRef.current.estimateHands(videoRef.current);
 
                         const canvas = canvasRef.current;
@@ -75,17 +71,40 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                         canvas.height = videoRef.current.videoHeight;
 
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
                         if (hands.length > 0) {
                             const keypoints = hands[0].keypoints;
+
+                            // Automatic hand framing
+                            const handBox = getBoundingBox(keypoints);
+                            const zoomScale = 2; // Adjust zoom scale as needed
+
+                            ctx.save();
+                            ctx.translate(canvas.width / 2, canvas.height / 2);
+                            ctx.scale(zoomScale, zoomScale);
+                            ctx.translate(
+                                -handBox.centerX,
+                                -handBox.centerY
+                            );
+                            ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+                            ctx.restore();
+
                             drawHandSkeleton(keypoints, ctx);
 
                             const requiredGesture = steps[currentStep]?.gesture;
-                            if (requiredGesture && detectGesture(requiredGesture, keypoints)) {
-                                gestureStateRef.current.lastGesture = requiredGesture;
+                            if (
+                                requiredGesture &&
+                                detectGesture(requiredGesture, keypoints) &&
+                                !cooldown
+                            ) {
+                                // Start cooldown
+                                setCooldown(true);
                                 onGestureDetected();
+                                setTimeout(() => setCooldown(false), 5000); // 5-second cooldown
                             }
+                        } else {
+                            // If no hands detected, display normal video feed
+                            ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
                         }
                     }
                     // Request the next frame
@@ -94,12 +113,23 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
                 // Start the detection loop
                 detectGestures();
-
             } catch (err) {
                 console.error('Error initializing camera:', err);
                 setError('Could not access camera. Please ensure you have granted camera permissions.');
-                setIsLoading(false);
             }
+        };
+
+        const getBoundingBox = (keypoints) => {
+            const xs = keypoints.map((point) => point.x);
+            const ys = keypoints.map((point) => point.y);
+            return {
+                minX: Math.min(...xs),
+                maxX: Math.max(...xs),
+                minY: Math.min(...ys),
+                maxY: Math.max(...ys),
+                centerX: (Math.min(...xs) + Math.max(...xs)) / 2,
+                centerY: (Math.min(...ys) + Math.max(...ys)) / 2,
+            };
         };
 
         runHandPoseDetection();
@@ -113,116 +143,73 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 detectorRef.current.dispose();
             }
             if (videoRef.current?.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+                videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [onGestureDetected, currentStep, steps]);
+    }, [onGestureDetected, currentStep, steps, cooldown]);
 
-    // Helper function to detect specific gestures
+    // Gesture detection functions (adjusted for distinct gestures)
     const detectGesture = (gesture, keypoints) => {
         switch (gesture) {
-            case 'wave':
-                return detectWaveGesture(keypoints);
+            case 'open_hand':
+                return detectOpenHandGesture(keypoints);
             case 'thumbs_up':
                 return detectThumbsUpGesture(keypoints);
-            case 'peace':
-                return detectPeaceGesture(keypoints);
-            case 'okay':
-                return detectOkayGesture(keypoints);
+            case 'victory':
+                return detectVictoryGesture(keypoints);
+            case 'call_me':
+                return detectCallMeGesture(keypoints);
             default:
                 return false;
         }
     };
 
-    // Gesture Detection Implementations
-
-    // 1. Wave Gesture Detection
-    const detectWaveGesture = (keypoints) => {
-        /*
-          Simple wave detection can be based on horizontal movement of the wrist (defined by keypoint 0).
-          For a more accurate detection, you may track multiple points and their movement over time.
-        */
-        const wrist = keypoints[0];
-        // For simplicity, check if wrist's y-coordinate is within a certain range (indicating movement up and down)
-        // Implement a better wave detection algorithm as needed
-        // Placeholder: Always return false
-
-        const threshold = 20; // Adjust based on testing
-
-        if (wrist.y > threshold) {
-            return true;
-        }
-
-        return false;
+    const detectOpenHandGesture = (keypoints) => {
+        // Check if all fingers are extended
+        const fingersExtended = keypoints.slice(4).every((tip, index) => {
+            const pip = keypoints[5 + index * 4];
+            return tip.y < pip.y;
+        });
+        return fingersExtended;
     };
 
-    // 2. Thumbs Up Gesture Detection
     const detectThumbsUpGesture = (keypoints) => {
-        /*
-          Thumbs up can be detected by checking:
-          - Thumb is extended (tip is above IP joint)
-          - Other fingers are folded
-        */
-        const thumb = keypoints[4];
+        // Thumb up, other fingers folded
+        const thumbTip = keypoints[4];
         const thumbIP = keypoints[3];
+        const isThumbUp = thumbTip.y < thumbIP.y;
 
-        const isThumbUp = thumb.y < thumbIP.y; // Y decreases upwards
+        const fingersFolded = [8, 12, 16, 20].every((tipIndex) => {
+            const tip = keypoints[tipIndex];
+            const pip = keypoints[tipIndex - 2];
+            return tip.y > pip.y;
+        });
 
-        // Check other fingers are not extended
-        const fingers = [
-            { tip: keypoints[8], pip: keypoints[6] }, // Index
-            { tip: keypoints[12], pip: keypoints[10] }, // Middle
-            { tip: keypoints[16], pip: keypoints[14] }, // Ring
-            { tip: keypoints[20], pip: keypoints[18] }, // Pinky
-        ];
-
-        const areFingersFolded = fingers.every(finger => finger.tip.y > finger.pip.y);
-
-        return isThumbUp && areFingersFolded;
+        return isThumbUp && fingersFolded;
     };
 
-    // 3. Peace Gesture Detection
-    const detectPeaceGesture = (keypoints) => {
-        /*
-          Peace sign can be detected by checking:
-          - Index and middle fingers are extended.
-          - Other fingers are folded.
-        */
-
-        const indexTip = keypoints[8];
-        const indexPip = keypoints[6];
-        const middleTip = keypoints[12];
-        const middlePip = keypoints[10];
-        const ringTip = keypoints[16];
-        const ringPip = keypoints[14];
-        const pinkyTip = keypoints[20];
-        const pinkyPip = keypoints[18];
-
-        const isIndexUp = indexTip.y < indexPip.y;
-        const isMiddleUp = middleTip.y < middlePip.y;
-        const isRingDown = ringTip.y > ringPip.y;
-        const isPinkyDown = pinkyTip.y > pinkyPip.y;
+    const detectVictoryGesture = (keypoints) => {
+        // Index and middle fingers up, others down
+        const isIndexUp = keypoints[8].y < keypoints[6].y;
+        const isMiddleUp = keypoints[12].y < keypoints[10].y;
+        const isRingDown = keypoints[16].y > keypoints[14].y;
+        const isPinkyDown = keypoints[20].y > keypoints[18].y;
 
         return isIndexUp && isMiddleUp && isRingDown && isPinkyDown;
     };
 
-    // 4. Okay Gesture Detection
-    const detectOkayGesture = (keypoints) => {
-        /*
-          Okay sign can be detected by checking:
-          - Thumb and index finger touch forming a circle.
-          - Other fingers are extended or folded as desired.
-        */
-        // Calculate distance between thumb tip and index tip
-        const thumbTip = keypoints[4];
-        const indexTip = keypoints[8];
-        const distance = Math.hypot(thumbTip.x - indexTip.x, thumbTip.y - indexTip.y);
+    const detectCallMeGesture = (keypoints) => {
+        // Thumb and pinky extended, other fingers folded
+        const isThumbUp = keypoints[4].y < keypoints[3].y;
+        const isPinkyUp = keypoints[20].y < keypoints[19].y;
 
-        const threshold = 30; // Adjust based on testing
+        const fingersFolded = [8, 12, 16].every((tipIndex) => {
+            const tip = keypoints[tipIndex];
+            const pip = keypoints[tipIndex - 2];
+            return tip.y > pip.y;
+        });
 
-        // Optionally, check other fingers
-        // For simplicity, just check the distance
-        return distance < threshold;
+        return isThumbUp && isPinkyUp && fingersFolded;
     };
 
     if (error) {
@@ -230,22 +217,22 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
     }
 
     return (
-        <div style={{ position: 'relative', width: '640px', height: '480px', margin: '0 auto' }}>
-            <video
-                ref={videoRef}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }}
-                playsInline
-            />
-            {isLoading && <div className="loading-message">Loading...</div>}
+        <div className="camera-container">
+            {loadingMessage ? (
+                <div className="loading-overlay">
+                    <div className="loader"></div>
+                    <p>{loadingMessage}</p>
+                </div>
+            ) : null}
             <canvas
                 ref={canvasRef}
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                className="camera-canvas"
             />
             {currentStep < steps.length && (
                 <GestureOverlay
-                    message={currentStep === 0 ? 'Hint: Try to wave' : `Make a ${steps[currentStep].gesture.replace('_', ' ')} gesture to proceed`}
+                    message={`Make a "${steps[currentStep].gesture.replace('_', ' ')}" gesture to proceed`}
                     stepContent={steps[currentStep].content}
-                    key={currentStep} // To trigger re-mount and transition
+                    key={currentStep}
                 />
             )}
         </div>
