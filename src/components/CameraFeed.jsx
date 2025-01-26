@@ -44,6 +44,9 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
                 if (!isMounted) return;
 
+                console.log(videoRef.current);
+                console.log(videoRef);
+
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
                     videoRef.current.setAttribute('playsinline', '');
