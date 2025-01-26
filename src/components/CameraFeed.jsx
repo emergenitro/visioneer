@@ -46,6 +46,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
                 console.log(videoRef.current);
                 console.log(videoRef);
+                console.log(stream);
 
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
@@ -54,6 +55,13 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                     videoRef.current.onloadeddata = () => {
                         videoRef.current.play().catch((err) => console.error('Play error:', err));
                     };
+                }
+                if (!videoRef.current) {
+                    const hiddenVideo = document.createElement('video');
+                    hiddenVideo.setAttribute('playsinline', '');
+                    hiddenVideo.autoplay = true;
+                    hiddenVideo.muted = true;
+                    videoRef.current = hiddenVideo;
                 }
 
                 setLoadingMessage(null); // Models and camera are ready
