@@ -1,7 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
-import './App.css'; // Import CSS for styling
 
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
@@ -10,40 +9,49 @@ function App() {
     const steps = [
         {
             title: 'Description of the YSWS',
-            content: 'Visioneer challenges participants to develop a computer vision project that leverages technologies like OpenCV or similar...',
+            content:
+                'Visioneer challenges participants to develop a computer vision project that leverages technologies like OpenCV or similar...',
             gesture: 'open_hand',
         },
         {
             title: 'Requirements/Criteria',
-            content: 'Projects should apply computer vision in unique or unconventional ways. Examples include real-time object tracking...',
+            content:
+                'Projects should apply computer vision in unique or unconventional ways. Examples include real-time object tracking...',
             gesture: 'thumbs_up',
         },
         {
             title: 'What Do You Get When You Complete It?',
-            content: 'Upon successful submission and evaluation of your Visioneer project, participants will receive an ESP32-S3-EYE...',
+            content:
+                'Upon successful submission and evaluation of your Visioneer project, participants will receive an ESP32-S3-EYE...',
             gesture: 'victory',
         },
         {
             title: 'How to Submit',
-            content: 'You can submit your project by providing a link to your repository along with a README explaining your project in detail...',
+            content:
+                'You can submit your project by providing a link to your repository along with a README explaining your project in detail...',
             gesture: 'call_me',
         },
     ];
 
     const handleGestureDetected = useCallback(() => {
-        setCurrentStep((prevStep) => {
-            if (prevStep < steps.length - 1) {
-                return prevStep + 1;
-            }
-            return prevStep;
-        });
+        setCurrentStep((prevStep) =>
+            prevStep < steps.length - 1 ? prevStep + 1 : prevStep
+        );
     }, [steps.length]);
+
+    const handleBack = () => {
+        setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
+    };
 
     return (
         <div className="app-container">
             <div className="left-panel">
                 {useCamera ? (
-                    <StepContent currentStep={currentStep} steps={steps} />
+                    <StepContent
+                        currentStep={currentStep}
+                        steps={steps}
+                        onBack={handleBack}
+                    />
                 ) : (
                     <div className="step-content">
                         <h2>Camera is off</h2>

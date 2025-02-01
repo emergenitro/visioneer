@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import '../assets/GestureOverlay.css';
+import { useState, useEffect } from 'react';
 
 function GestureOverlay({ message, stepContent }) {
     const [visible, setVisible] = useState(false);
@@ -9,7 +8,6 @@ function GestureOverlay({ message, stepContent }) {
         const timer = setTimeout(() => {
             setVisible(true);
         }, 100);
-
         return () => clearTimeout(timer);
     }, [message, stepContent]);
 

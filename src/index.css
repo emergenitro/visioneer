@@ -1,61 +1,166 @@
-@import url('https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap');
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Background gradient and font */
+html,
 body {
-  background: linear-gradient(270deg, #0cccc6, #0df7eb);
-  font-family: "PT Serif", serif !important;
-  font-weight: 400;
-  font-style: normal;
   margin: 0;
   padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  overflow: hidden;
 }
 
-* {
+/* Layout for the app */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Left panel: instructions, with a nice gradient background */
+.left-panel {
+  width: 40%;
+  background: linear-gradient(135deg, #8ec5fc, #e0c3fc);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
   box-sizing: border-box;
+  overflow-y: auto;
 }
 
-h1 {
-  font-weight: 700;
-  font-size: 2.5em;
-  text-align: center;
-  margin-top: 0.5em;
+/* Right panel: camera view */
+.right-panel {
+  width: 60%;
+  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
-canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-.button-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-button {
-  background-color: #fff;
-  color: #0cccc6;
-  border: none;
-  padding: 0.5em 1em;
-  font-size: 1em;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #0df7eb;
-}
-
-.error-message {
-  color: #ff4444;
-  text-align: center;
-  padding: 20px;
-  background: rgba(255, 0, 0, 0.1);
+/* Camera container styling */
+.camera-container {
+  width: 95%;
+  height: 95%;
+  position: relative;
+  border: 4px solid #444;
   border-radius: 8px;
-  margin: 20px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* The canvas displays the video feed and overlays */
+.camera-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Loading overlay styles with a spinner */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  color: #fff;
+  font-size: 1.2em;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 6px solid #3498db;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Gesture overlay: a subtle note on the video canvas */
+.gesture-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: opacity 0.3s ease-in-out;
+  z-index: 5;
+}
+
+.gesture-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gesture-overlay.visible {
+  opacity: 1;
+}
+
+/* Step content (instructions) styling */
+.step-content {
+  text-align: center;
+  color: #fff;
+  max-width: 500px;
+}
+
+.step-content h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.step-content p {
+  font-size: 1.2em;
+  line-height: 1.5;
+}
+
+.hint {
+  margin-top: 20px;
+  font-style: italic;
+  color: #333;
+}
+
+/* Buttons */
+.back-button,
+.restart-button {
+  margin-top: 30px;
+  background: #fff;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.back-button:hover,
+.restart-button:hover {
+  background: #ddd;
+}
+
+/* Error message styling */
+.error-message {
+  color: red;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
 }
