@@ -21,7 +21,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
     const canvasRef = useRef(null);
     const detectorRef = useRef(null);
     const animationFrameIdRef = useRef(null);
-    const cooldownRef = useRef(false); // replaced cooldown state
+    const cooldownRef = useRef(false);
 
     const [loadingMessage, setLoadingMessage] = useState(null);
     const [error, setError] = useState(null);
@@ -69,12 +69,28 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 videoRef.current &&
                 videoRef.current.readyState === 4
             ) {
+                const hands = detectorRef.current ? await detectorRef.current.estimateHands(videoRef.current) : [];
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d');
                 canvas.width = videoRef.current.videoWidth;
                 canvas.height = videoRef.current.videoHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+                if (hands.length > 0) {
+                    const keypoints = hands[0].keypoints;
+                    drawHandSkeleton(keypoints, ctx);
+
+                    const requiredGesture = steps[currentStep]?.gesture;
+                    if (requiredGesture && detectGesture(requiredGesture, keypoints) && !cooldownRef.current) {
+                        cooldownRef.current = true;
+                        new Audio('/sounds/success.mp3').play();
+                        onGestureDetected();
+                        setTimeout(() => {
+                            cooldownRef.current = false;
+                        }, 5000);
+                    }
+                }
             }
             if (isMounted) animationFrameIdRef.current = requestAnimationFrame(renderVideo);
         };
@@ -93,38 +109,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [initCamera]);
-
-    useEffect(() => {
-        const detectGestures = async () => {
-            if (
-                videoRef.current &&
-                videoRef.current.readyState === 4 &&
-                detectorRef.current
-            ) {
-                const hands = await detectorRef.current.estimateHands(videoRef.current);
-                const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
-
-                if (hands.length > 0) {
-                    const keypoints = hands[0].keypoints;
-                    drawHandSkeleton(keypoints, ctx);
-
-                    const requiredGesture = steps[currentStep]?.gesture;
-                    if (requiredGesture && detectGesture(requiredGesture, keypoints) && !cooldownRef.current) {
-                        cooldownRef.current = true;
-                        new Audio('/sounds/success.mp3').play();
-                        onGestureDetected();
-                        setTimeout(() => {
-                            cooldownRef.current = false;
-                        }, 5000);
-                    }
-                }
-            }
-        };
-
-        detectGestures();
-    }, [onGestureDetected, currentStep, steps]);
+    }, [onGestureDetected, currentStep, steps, initCamera]);
 
     // Gesture detection functions
     const detectOpenHandGesture = (keypoints) => {
