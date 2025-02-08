@@ -61,7 +61,41 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
     useEffect(() => {
         let isMounted = true;
+
         initCamera();
+
+        const renderVideo = async () => {
+            if (
+                videoRef.current &&
+                videoRef.current.readyState === 4
+            ) {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                canvas.width = videoRef.current.videoWidth;
+                canvas.height = videoRef.current.videoHeight;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+            }
+            if (isMounted) animationFrameIdRef.current = requestAnimationFrame(renderVideo);
+        };
+
+        renderVideo();
+
+        return () => {
+            isMounted = false;
+            if (animationFrameIdRef.current) {
+                cancelAnimationFrame(animationFrameIdRef.current);
+            }
+            if (detectorRef.current) {
+                detectorRef.current.dispose();
+            }
+            if (videoRef.current?.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+            }
+        };
+    }, [initCamera]);
+
+    useEffect(() => {
         const detectGestures = async () => {
             if (
                 videoRef.current &&
@@ -71,11 +105,6 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 const hands = await detectorRef.current.estimateHands(videoRef.current);
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d');
-                canvas.width = videoRef.current.videoWidth;
-                canvas.height = videoRef.current.videoHeight;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Draw the video feed once
-                ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
                 if (hands.length > 0) {
                     const keypoints = hands[0].keypoints;
@@ -92,24 +121,10 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                     }
                 }
             }
-            if (isMounted) animationFrameIdRef.current = requestAnimationFrame(detectGestures);
         };
 
         detectGestures();
-
-        return () => {
-            isMounted = false;
-            if (animationFrameIdRef.current) {
-                cancelAnimationFrame(animationFrameIdRef.current);
-            }
-            if (detectorRef.current) {
-                detectorRef.current.dispose();
-            }
-            if (videoRef.current?.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-            }
-        };
-    }, [onGestureDetected, currentStep, steps, initCamera]); // removed cooldown from deps
+    }, [onGestureDetected, currentStep, steps]);
 
     // Gesture detection functions
     const detectOpenHandGesture = (keypoints) => {
