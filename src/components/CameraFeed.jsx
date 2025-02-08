@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 import { drawHandSkeleton } from './handUtils';
 import GestureOverlay from './GestureOverlay';
@@ -17,7 +17,6 @@ function getBoundingBox(keypoints) {
 }
 
 function CameraFeed({ onGestureDetected, currentStep, steps }) {
-    // Create refs for the (hidden) video element, canvas, detector, and animation frame id.
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const detectorRef = useRef(null);
@@ -27,10 +26,92 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
     const [error, setError] = useState(null);
     const [cooldown, setCooldown] = useState(false);
 
-    // ---- Improved gesture detection functions using thresholds
+    const initCamera = useCallback(async () => {
+        try {
+            setError(null);
+            setLoadingMessage('Loading models...');
+            const model = handPoseDetection.SupportedModels.MediaPipeHands;
+            const detectorConfig = {
+                runtime: 'mediapipe',
+                solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
+                modelType: 'full',
+                maxHands: 1,
+            };
+            detectorRef.current = await handPoseDetection.createDetector(model, detectorConfig);
+
+            setLoadingMessage('Switching on camera...');
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: 640, height: 480, facingMode: 'user' },
+            });
+
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                videoRef.current.setAttribute('playsinline', '');
+                videoRef.current.setAttribute('autoplay', '');
+                videoRef.current.onloadeddata = () => {
+                    videoRef.current.play().catch((err) => console.error('Play error:', err));
+                };
+            }
+            setLoadingMessage(null);
+        } catch (err) {
+            console.error('Error initializing camera:', err);
+            setError('Could not access camera. Please grant permissions.');
+        }
+    }, []);
+
+    useEffect(() => {
+        let isMounted = true;
+        initCamera();
+        const detectGestures = async () => {
+            if (
+                videoRef.current &&
+                videoRef.current.readyState === 4 &&
+                detectorRef.current
+            ) {
+                const hands = await detectorRef.current.estimateHands(videoRef.current);
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                canvas.width = videoRef.current.videoWidth;
+                canvas.height = videoRef.current.videoHeight;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Draw the video feed once
+                ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+                if (hands.length > 0) {
+                    const keypoints = hands[0].keypoints;
+                    drawHandSkeleton(keypoints, ctx);
+
+                    const requiredGesture = steps[currentStep]?.gesture;
+                    if (requiredGesture && detectGesture(requiredGesture, keypoints) && !cooldown) {
+                        setCooldown(true);
+                        new Audio('/sounds/success.mp3').play();
+                        onGestureDetected();
+                        setTimeout(() => setCooldown(false), 5000);
+                    }
+                }
+            }
+            if (isMounted) animationFrameIdRef.current = requestAnimationFrame(detectGestures);
+        };
+
+        detectGestures();
+
+        return () => {
+            isMounted = false;
+            if (animationFrameIdRef.current) {
+                cancelAnimationFrame(animationFrameIdRef.current);
+            }
+            if (detectorRef.current) {
+                detectorRef.current.dispose();
+            }
+            if (videoRef.current?.srcObject) {
+                videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+            }
+        };
+    }, [onGestureDetected, currentStep, steps, cooldown, initCamera]);
+
+    // Gesture detection functions
     const detectOpenHandGesture = (keypoints) => {
-        const threshold = 20; // pixels
-        // For an open hand, we require that index, middle, ring, and pinky tips are significantly higher (i.e. smaller y) than their PIP joints.
+        const threshold = 20;
         return (
             keypoints[8].y < keypoints[6].y - threshold &&
             keypoints[12].y < keypoints[10].y - threshold &&
@@ -41,7 +122,6 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
     const detectThumbsUpGesture = (keypoints) => {
         const threshold = 20;
-        // Thumb tip above the thumb IP and the other fingers roughly folded (not extended)
         return (
             keypoints[4].y < keypoints[3].y - threshold &&
             keypoints[8].y > keypoints[6].y - 10 &&
@@ -53,7 +133,6 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
     const detectVictoryGesture = (keypoints) => {
         const threshold = 20;
-        // Index and middle fingers extended, ring and pinky folded.
         return (
             keypoints[8].y < keypoints[6].y - threshold &&
             keypoints[12].y < keypoints[10].y - threshold &&
@@ -64,7 +143,6 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
     const detectCallMeGesture = (keypoints) => {
         const threshold = 20;
-        // Thumb and pinky extended while index, middle, and ring fingers are folded.
         return (
             keypoints[4].y < keypoints[3].y - threshold &&
             keypoints[20].y < keypoints[19].y - threshold &&
@@ -89,122 +167,15 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
         }
     };
 
-    useEffect(() => {
-        let isMounted = true;
-        // This async function loads the hand-pose detector and gets the camera stream.
-        const runHandPoseDetection = async () => {
-            try {
-                setLoadingMessage('Loading models...');
-                const model = handPoseDetection.SupportedModels.MediaPipeHands;
-                const detectorConfig = {
-                    runtime: 'mediapipe',
-                    solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
-                    modelType: 'full',
-                    maxHands: 1,
-                };
-                detectorRef.current = await handPoseDetection.createDetector(
-                    model,
-                    detectorConfig
-                );
-
-                if (!isMounted) return;
-
-                setLoadingMessage('Switching on camera...');
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: 640, height: 480, facingMode: 'user' },
-                });
-
-                if (!isMounted) return;
-
-                // Use the hidden video element rendered in our JSX.
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    videoRef.current.setAttribute('playsinline', '');
-                    videoRef.current.setAttribute('autoplay', '');
-                    videoRef.current.onloadeddata = () => {
-                        videoRef.current
-                            .play()
-                            .catch((err) => console.error('Play error:', err));
-                    };
-                }
-
-                setLoadingMessage(null); // Models and camera are ready
-
-                const detectGestures = async () => {
-                    if (
-                        videoRef.current &&
-                        videoRef.current.readyState === 4 &&
-                        detectorRef.current
-                    ) {
-                        const hands = await detectorRef.current.estimateHands(
-                            videoRef.current
-                        );
-                        const canvas = canvasRef.current;
-                        const ctx = canvas.getContext('2d');
-                        // Set canvas size to the video's dimensions:
-                        canvas.width = videoRef.current.videoWidth;
-                        canvas.height = videoRef.current.videoHeight;
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
-                        if (hands.length > 0) {
-                            const keypoints = hands[0].keypoints;
-                            const handBox = getBoundingBox(keypoints);
-                            ctx.save();
-                            // (Optional) perform a simple zoom/translate so the hand is centered.
-                            ctx.translate(canvas.width / 2, canvas.height / 2);
-                            ctx.translate(-handBox.centerX, -handBox.centerY);
-                            ctx.drawImage(
-                                videoRef.current,
-                                0,
-                                0,
-                                canvas.width,
-                                canvas.height
-                            );
-                            ctx.restore();
-
-                            drawHandSkeleton(keypoints, ctx);
-
-                            const requiredGesture = steps[currentStep]?.gesture;
-                            if (requiredGesture && detectGesture(requiredGesture, keypoints) && !cooldown) {
-                                setCooldown(true);
-                                onGestureDetected();
-                                setTimeout(() => setCooldown(false), 5000); // 5-second cooldown
-                            }
-                        }
-                    }
-                    animationFrameIdRef.current = requestAnimationFrame(detectGestures);
-                };
-
-                detectGestures();
-            } catch (err) {
-                console.error('Error initializing camera:', err);
-                setError(
-                    'Could not access camera. Please ensure you have granted camera permissions.'
-                );
-            }
-        };
-
-        runHandPoseDetection();
-
-        return () => {
-            isMounted = false;
-            if (animationFrameIdRef.current) {
-                cancelAnimationFrame(animationFrameIdRef.current);
-            }
-            if (detectorRef.current) {
-                detectorRef.current.dispose();
-            }
-            if (videoRef.current?.srcObject) {
-                videoRef.current.srcObject
-                    .getTracks()
-                    .forEach((track) => track.stop());
-            }
-        };
-    }, [onGestureDetected, currentStep, steps, cooldown]);
-
     if (error) {
-        return <div className="error-message">{error}</div>;
+        return (
+            <div className="camera-container">
+                <div className="error-message">{error}</div>
+                <button className="restart-button" onClick={initCamera}>
+                    Retry
+                </button>
+            </div>
+        );
     }
 
     return (
@@ -215,7 +186,6 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                     <p>{loadingMessage}</p>
                 </div>
             )}
-            {/* The hidden video element so that videoRef.current is defined */}
             <video ref={videoRef} style={{ display: 'none' }} />
             <canvas ref={canvasRef} className="camera-canvas" />
             {currentStep < steps.length && (

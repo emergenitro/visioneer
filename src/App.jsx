@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
+import ProgressBar from './components/ProgressBar';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
@@ -46,6 +47,7 @@ function App() {
     return (
         <div className="app-container">
             <div className="left-panel">
+                <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
                 {useCamera ? (
                     <StepContent
                         currentStep={currentStep}
