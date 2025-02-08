@@ -21,10 +21,10 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
     const canvasRef = useRef(null);
     const detectorRef = useRef(null);
     const animationFrameIdRef = useRef(null);
+    const cooldownRef = useRef(false); // replaced cooldown state
 
     const [loadingMessage, setLoadingMessage] = useState(null);
     const [error, setError] = useState(null);
-    const [cooldown, setCooldown] = useState(false);
 
     const initCamera = useCallback(async () => {
         try {
@@ -82,11 +82,13 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                     drawHandSkeleton(keypoints, ctx);
 
                     const requiredGesture = steps[currentStep]?.gesture;
-                    if (requiredGesture && detectGesture(requiredGesture, keypoints) && !cooldown) {
-                        setCooldown(true);
+                    if (requiredGesture && detectGesture(requiredGesture, keypoints) && !cooldownRef.current) {
+                        cooldownRef.current = true;
                         new Audio('/sounds/success.mp3').play();
                         onGestureDetected();
-                        setTimeout(() => setCooldown(false), 5000);
+                        setTimeout(() => {
+                            cooldownRef.current = false;
+                        }, 5000);
                     }
                 }
             }
@@ -107,7 +109,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [onGestureDetected, currentStep, steps, cooldown, initCamera]);
+    }, [onGestureDetected, currentStep, steps, initCamera]); // removed cooldown from deps
 
     // Gesture detection functions
     const detectOpenHandGesture = (keypoints) => {
