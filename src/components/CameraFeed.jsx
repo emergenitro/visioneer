@@ -21,7 +21,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
     const canvasRef = useRef(null);
     const detectorRef = useRef(null);
     const animationFrameIdRef = useRef(null);
-    const cooldownRef = useRef(false);
+    const cooldownRef = useRef(false); // replaced cooldown state
 
     const [loadingMessage, setLoadingMessage] = useState(null);
     const [error, setError] = useState(null);
@@ -61,20 +61,25 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
 
     useEffect(() => {
         let isMounted = true;
-
         initCamera();
-
-        const renderVideo = async () => {
+        const detectGestures = async () => {
             if (
                 videoRef.current &&
-                videoRef.current.readyState === 4
+                videoRef.current.readyState === 4 &&
+                detectorRef.current
             ) {
-                const hands = detectorRef.current ? await detectorRef.current.estimateHands(videoRef.current) : [];
+                let hands = [];
+                try {
+                    hands = await detectorRef.current.estimateHands(videoRef.current);
+                } catch (err) {
+                    console.error('Error during hand detection:', err);
+                }
                 const canvas = canvasRef.current;
                 const ctx = canvas.getContext('2d');
                 canvas.width = videoRef.current.videoWidth;
                 canvas.height = videoRef.current.videoHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Draw the video feed once
                 ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
                 if (hands.length > 0) {
@@ -92,10 +97,10 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                     }
                 }
             }
-            if (isMounted) animationFrameIdRef.current = requestAnimationFrame(renderVideo);
+            if (isMounted) animationFrameIdRef.current = requestAnimationFrame(detectGestures);
         };
 
-        renderVideo();
+        detectGestures();
 
         return () => {
             isMounted = false;
@@ -109,7 +114,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
             }
         };
-    }, [onGestureDetected, currentStep, steps, initCamera]);
+    }, [onGestureDetected, currentStep, steps, initCamera]); // removed cooldown from deps
 
     // Gesture detection functions
     const detectOpenHandGesture = (keypoints) => {
