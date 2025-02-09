@@ -92,26 +92,32 @@ function App() {
         const dustContainer = document.createElement('div');
         dustContainer.className = 'dust-particles';
         
-        for (let i = 0; i < 314; i++) {
+        // Increase to 500 particles
+        for (let i = 0; i < 500; i++) {
             const particle = document.createElement('div');
             particle.className = 'dust-particle';
             
             // Random properties
             const size = 1 + Math.random() * 3;
             const duration = 10 + Math.random() * 20;
-            const travelDistance = -100 - Math.random() * 300;
             const startPosition = Math.random() * 100;
             const delay = Math.random() * -duration;
             const hue = Math.random() * 360;
+            
+            // Randomly decide if particle starts from top or bottom
+            const startFromTop = Math.random() > 0.5;
+            const travelDistance = startFromTop ? 
+                (100 + Math.random() * 300) :  // Moving down
+                (-100 - Math.random() * 300);  // Moving up
             
             particle.style.cssText = `
                 width: ${size}px;
                 height: ${size}px;
                 left: ${startPosition}%;
-                bottom: -20px;
+                ${startFromTop ? 'top: -20px' : 'bottom: -20px'};
                 opacity: 0;
                 background: hsla(${hue}, 70%, 50%, 0.6);
-                animation: float ${duration}s linear infinite;
+                animation: ${startFromTop ? 'floatDown' : 'floatUp'} ${duration}s linear infinite;
                 animation-delay: ${delay}s;
                 --travel-distance: ${travelDistance}px;
                 --opacity: ${0.3 + Math.random() * 0.5};
