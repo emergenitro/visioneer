@@ -34,6 +34,7 @@ body {
   padding: 40px;
   box-sizing: border-box;
   overflow-y: auto;
+  color: #f0f0f0;
 }
 
 /* Right panel: camera view */
