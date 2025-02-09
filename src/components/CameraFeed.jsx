@@ -148,14 +148,16 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
         );
     };
 
-    const detectCallMeGesture = (keypoints) => {
+    const detectRockOnGesture = (keypoints) => {
         const threshold = 15;
         const isThumbExtended = keypoints[4].y < keypoints[3].y - threshold;
+        const isIndexExtended = keypoints[8].y < keypoints[6].y - threshold;
         const isPinkyExtended = keypoints[20].y < keypoints[19].y - threshold;
-        const isIndexCurled = keypoints[8].y > keypoints[6].y;
+
         const isMiddleCurled = keypoints[12].y > keypoints[10].y;
         const isRingCurled = keypoints[16].y > keypoints[14].y;
-        return isThumbExtended && isPinkyExtended && isIndexCurled && isMiddleCurled && isRingCurled;
+
+        return isThumbExtended && isIndexExtended && isPinkyExtended && isMiddleCurled && isRingCurled;
     };
 
     const detectGesture = (gesture, keypoints) => {
@@ -167,7 +169,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
             case 'victory':
                 return detectVictoryGesture(keypoints);
             case 'call_me':
-                return detectCallMeGesture(keypoints);
+                return detectRockOnGesture(keypoints);
             default:
                 return false;
         }
