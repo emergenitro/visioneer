@@ -19,8 +19,7 @@ body {
 /* Layout for the app */
 .app-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  flex-wrap: wrap;
 }
 
 /* Left panel: instructions, with a nice gradient background */
