@@ -1,0 +1,588 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Archivo', sans-serif;
+  background: #f0f2f5;
+  color: #333;
+  overflow: hidden;
+}
+
+/* Theme color */
+:root {
+  --theme-color: #000000;
+  --gradient-color: #1a1a1a;
+  --accent-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Layout for the app */
+.app-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Left panel: instructions */
+.left-panel {
+  height: 100vh;
+  width: 40%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 4rem 3rem;
+  box-sizing: border-box;
+  color: #000;
+  background: white;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: 6rem;
+}
+
+.left-panel.full-width {
+  width: 100%;
+}
+
+/* Animated particles */
+.dust-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.dust-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: var(--opacity);
+  }
+  100% {
+    transform: translateY(var(--travel-distance)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Remove the frosted glass overlay */
+.left-panel::after {
+  display: none;
+}
+
+/* Progress bar positioning */
+.progress-bar-container {
+  position: absolute;
+  top: 2rem;
+  left: 10%;
+  width: 80%;
+}
+
+/* Content styling */
+.step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  opacity: 0; /* Start invisible */
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 5;
+}
+
+.step-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Remove the transitioning class styles since we're using visible instead */
+.step-content.transitioning {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Keep visioneer title large */
+.step-content h1[data-title="visioneer"] {
+  font-size: 4.5em;
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: left;
+  color: #000;
+  font-family: 'Archivo', sans-serif;
+}
+
+/* Reduce other headings by 70% (original 40% + additional 30%) */
+.step-content h1:not([data-title="visioneer"]) {
+  font-size: 1.89em; /* 4.5 * 0.3 = 1.89 (70% reduction) */
+  margin: 0;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: left;
+  color: #000;
+  font-family: 'Archivo', sans-serif;
+}
+
+.step-content p {
+  font-size: 1em;
+  line-height: 1.6;
+  opacity: 0.8;
+  text-align: left;
+  margin: 0;
+  color: #000;
+}
+
+/* Style links in step content */
+.step-content p a {
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.step-content p a:hover {
+  opacity: 0.7;
+}
+
+/* Text-only view styling */
+.text-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem;
+}
+
+.text-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.text-section {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Also update text-section headings */
+.text-section h2 {
+  font-size: 1.89em;
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #000;
+  text-align: left;
+}
+
+.text-section p {
+  font-size: 1.25em;
+  line-height: 1.6;
+  opacity: 0.8;
+  margin: 0;
+  color: #000;
+  text-align: left;
+}
+
+/* Remove any duplicate hint styles */
+.hint {
+  display: none;
+}
+
+/* Skip button styling */
+.skip-button {
+  position: absolute;
+  top: 2rem;
+  right: 3rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #000;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75em;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 4;
+  opacity: 0.7;
+}
+
+.skip-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+/* Right panel: camera view */
+.right-panel {
+  height: 100vh;
+  width: 60%;
+  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Camera container styling */
+.camera-container {
+  width: 95%;
+  height: 95%;
+  position: relative;
+  border: 4px solid #444;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* The canvas displays the video feed and overlays */
+.camera-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+/* Loading overlay styles with a spinner */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  color: #fff;
+  font-size: 1.2em;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 6px solid var(--theme-color);
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Gesture overlay: a subtle note on the video canvas */
+.gesture-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px 30px;
+  border-radius: 12px;
+  box-shadow: 
+    0 4px 24px -1px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 5;
+  font-family: 'IBM Plex Mono', monospace;
+  text-align: center;
+  min-width: 200px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.gesture-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gesture-overlay.visible {
+  opacity: 1;
+}
+
+/* Progress bar styling */
+.progress-bar-container {
+  position: absolute;
+  top: 2rem;
+  left: 10%;
+  width: 80%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(5px);
+}
+
+.progress-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  transition: width 0.5s ease-in-out;
+}
+
+/* Back/Restart buttons */
+.back-button,
+.restart-button {
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  font-size: 1em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.back-button:hover,
+.restart-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Error message styling */
+.error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #ff3333;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1000;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.error-message a {
+  color: white;
+  font-size: 0.9em;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* Ending section styles */
+.app-container .ending-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--theme-color), var(--gradient-color));
+  color: #f0f0f0;
+  width: 100%;
+}
+
+.app-container .ending-section h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.app-container .ending-section p {
+  font-size: 1.2em;
+  line-height: 1.5;
+  max-width: 80%;
+}
+
+.app-container .ending-section a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app-container .ending-section a:hover {
+  background-color: #fff;
+  color: var(--theme-color);
+}
+
+/* Remove any other button styles that might be interfering */
+button {
+  /* Reset any global button styles */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Remove specific button classes that might be causing issues */
+.retry-button,
+[class*="retry"],
+[class*="Retry"] {
+  display: none !important;
+}
+
+/* Update full-width panel for text view */
+.full-width {
+  width: 100% !important;
+  align-items: flex-start;
+  padding: 2rem 4rem;
+  padding-bottom: 6rem;
+}
+
+/* Hide progress bar when in full-width mode */
+.full-width .progress-bar-container {
+  display: none;
+}
+
+/* Hide skip button when in full-width mode */
+.full-width .skip-button {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out;
+}
+
+/* Scroll instruction styling */
+.scroll-instruction {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8em;
+  opacity: 0;
+  font-style: italic;
+  animation: fadeIn 0.5s ease-out 1s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 10px);
+  }
+  to {
+    opacity: 0.6;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Add page transition indicators */
+.page-indicators {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out 1s forwards;
+}
+
+.page-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.page-indicator.active {
+  background: rgba(0, 0, 0, 0.6);
+  transform: scale(1.2);
+}
+
+/* Credits footer styling */
+.credits-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7em;
+    text-align: center;
+    opacity: 0;
+    z-index: 10;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.5s ease-out 0.3s forwards;
+}
+
+/* Footer styling for CV mode */
+.credits-footer.cv-mode {
+    width: 40%;
+    font-size: 0.6em;
+    padding: 0.5rem;
+    opacity: 0.4;
+    animation: none;
+}
+
+/* Add fadeInUp animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 0.6;
+        transform: translateY(0);
+    }
+}
+
+.credits-footer p {
+    margin: 0.2rem 0;
+}
+
+.credits-footer a {
+    color: inherit;
+    text-decoration: underline;
+    pointer-events: auto;
+}
+
+.credits-footer a:hover {
+    opacity: 0.8;
+}
+
+/* Hide scroll instruction after second page */
+.scroll-instruction {
+    animation: fadeIn 0.5s ease-out 1s forwards;
+    transition: opacity 0.3s ease;
+}
