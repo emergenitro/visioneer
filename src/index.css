@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap');
+
 html,
 body {
   margin: 0;
@@ -11,6 +13,7 @@ body {
 /* Theme color */
 :root {
   --theme-color: #0ABAB5;
+  --gradient-color: #0ce5de;
 }
 
 /* Layout for the app */
@@ -23,7 +26,7 @@ body {
 /* Left panel: instructions, with a nice gradient background */
 .left-panel {
   width: 40%;
-  background: linear-gradient(135deg, var(--theme-color), #e0c3fc);
+  background: linear-gradient(135deg, var(--theme-color), var(--gradient-color));
   display: flex;
   flex-direction: column;
   justify-content: center;
