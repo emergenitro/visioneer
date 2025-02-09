@@ -24,6 +24,7 @@ body {
 
 /* Left panel: instructions, with a nice gradient background */
 .left-panel {
+  height: 100%;
   width: 40%;
   background: linear-gradient(135deg, var(--theme-color), var(--gradient-color));
   display: flex;
@@ -38,6 +39,7 @@ body {
 
 /* Right panel: camera view */
 .right-panel {
+  height: 100%;
   width: 60%;
   background: #222;
   display: flex;
