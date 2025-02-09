@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
 import ProgressBar from './components/ProgressBar';
@@ -6,6 +6,8 @@ import ProgressBar from './components/ProgressBar';
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
     const [useCamera, setUseCamera] = useState(true);
+    const endingSectionRef = useRef(null);
+    const [showEnding, setShowEnding] = useState(false);
 
     const steps = [
         {
@@ -35,10 +37,17 @@ function App() {
     ];
 
     const handleGestureDetected = useCallback(() => {
-        setCurrentStep((prevStep) =>
-            prevStep < steps.length - 1 ? prevStep + 1 : prevStep
-        );
-    }, [steps.length]);
+        if (currentStep < steps.length - 1) {
+            setCurrentStep((prevStep) => prevStep + 1);
+        } else {
+            setShowEnding(true);
+            // Smooth scroll to the ending section
+            endingSectionRef.current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    }, [currentStep, steps.length]);
 
     const handleBack = () => {
         setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
@@ -70,6 +79,22 @@ function App() {
                     />
                 )}
             </div>
+            {showEnding && (
+                <div ref={endingSectionRef} className="ending-section">
+                    <h2>Thank you for participating!</h2>
+                    <p>
+                        We appreciate your interest in Visioneer. We hope you enjoyed the
+                        experience and learned something new.
+                    </p>
+                    <p>
+                        Feel free to explore more about our organization and other exciting
+                        opportunities on our website.
+                    </p>
+                    <a href="https://example.com" target="_blank" rel="noopener noreferrer">
+                        Visit our website
+                    </a>
+                </div>
+            )}
         </div>
     );
 }
