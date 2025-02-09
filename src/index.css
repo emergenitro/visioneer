@@ -61,9 +61,10 @@ body {
   background: rgba(255, 255, 255, 0.5);
   pointer-events: none;
   z-index: 1;
+  will-change: transform, opacity;
 }
 
-@keyframes float {
+@keyframes floatUp {
   0% {
     transform: translateY(0) rotate(0deg);
     opacity: 0;
@@ -73,6 +74,20 @@ body {
   }
   100% {
     transform: translateY(var(--travel-distance)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floatDown {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: var(--opacity);
+  }
+  100% {
+    transform: translateY(var(--travel-distance)) rotate(-360deg);
     opacity: 0;
   }
 }
