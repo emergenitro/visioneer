@@ -74,6 +74,7 @@ function App() {
         setUseCamera(false);
         if (videoRef.current?.srcObject) {
             videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+            videoRef.current.srcObject = null;
         }
     };
 
