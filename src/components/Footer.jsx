@@ -1,7 +1,12 @@
+import React, { useState } from 'react';
+
 const Footer = ({ isFullScreen, currentStep, totalSteps }) => {
-    // Only show in CV mode on last step, or in full-screen mode on last step
+    const [isMobile] = useState(window.innerWidth <= 768);
+    
+    // Show on last step for desktop, or always for mobile
     const shouldShow = (isFullScreen && currentStep === totalSteps - 1) || 
-                      (!isFullScreen && currentStep === totalSteps - 1);
+                      (!isFullScreen && currentStep === totalSteps - 1) ||
+                      isMobile;
     
     if (!shouldShow) return null;
 
