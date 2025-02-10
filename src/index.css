@@ -1,13 +1,13 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 html,
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Archivo', sans-serif;
+  font-family: 'PT Serif', serif;
   background: #f0f2f5;
-  color: #333;
+  color: white;
   overflow: hidden;
 }
 
@@ -34,8 +34,8 @@ body {
   flex-direction: column;
   padding: 4rem 3rem;
   box-sizing: border-box;
-  color: #000;
-  background: white;
+  color: white;
+  background: teal;
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   padding-bottom: 6rem;
 }
@@ -58,7 +58,6 @@ body {
 .dust-particle {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
   pointer-events: none;
   z-index: 1;
   will-change: transform, opacity;
@@ -132,7 +131,7 @@ body {
   transform: translateY(20px);
 }
 
-/* Keep visioneer title large */
+/* Update visioneer title styling */
 .step-content h1[data-title="visioneer"] {
   font-size: 4.5em;
   margin: 0;
@@ -140,8 +139,9 @@ body {
   font-weight: 600;
   letter-spacing: -0.02em;
   text-align: left;
-  color: #000;
-  font-family: 'Archivo', sans-serif;
+  color: white;
+  font-family: 'PT Serif', serif;
+  position: relative;
 }
 
 /* Reduce other headings by 70% (original 40% + additional 30%) */
@@ -152,8 +152,8 @@ body {
   font-weight: 600;
   letter-spacing: -0.02em;
   text-align: left;
-  color: #000;
-  font-family: 'Archivo', sans-serif;
+  color: white;
+  font-family: 'PT Serif', serif;
 }
 
 .step-content p {
@@ -162,7 +162,7 @@ body {
   opacity: 0.8;
   text-align: left;
   margin: 0;
-  color: #000;
+  color: white;
 }
 
 /* Style links in step content */
@@ -172,11 +172,15 @@ body {
   cursor: pointer;
   position: relative;
   z-index: 10;
-  transition: opacity 0.2s ease;
+  transition: all 0.3s ease;
+  filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+  display: inline-block;
 }
 
 .step-content p a:hover {
-  opacity: 0.7;
+  opacity: 1;
+  filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+  transform: scale(1.05);
 }
 
 /* Text-only view styling */
@@ -208,7 +212,7 @@ body {
   line-height: 1.2;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #000;
+  color: white;
   text-align: left;
 }
 
@@ -217,7 +221,7 @@ body {
   line-height: 1.6;
   opacity: 0.8;
   margin: 0;
-  color: #000;
+  color: white;
   text-align: left;
 }
 
@@ -229,11 +233,11 @@ body {
 /* Skip button styling */
 .skip-button {
   position: absolute;
-  top: 2rem;
+  top: 2.5rem;
   right: 3rem;
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #000;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.75em;
   padding: 0.5rem 1rem;
@@ -247,7 +251,7 @@ body {
 }
 
 .skip-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
   opacity: 1;
 }
@@ -505,6 +509,7 @@ button {
   opacity: 0;
   font-style: italic;
   animation: fadeIn 0.5s ease-out 1s forwards;
+  color: white;
 }
 
 @keyframes fadeIn {
@@ -535,12 +540,12 @@ button {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
 .page-indicator.active {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.6);
   transform: scale(1.2);
 }
 
@@ -559,6 +564,8 @@ button {
     pointer-events: none;
     transition: all 0.3s ease;
     animation: fadeInUp 0.5s ease-out 0.3s forwards;
+    color: white;
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
 }
 
 /* Footer styling for CV mode */
@@ -587,17 +594,43 @@ button {
 }
 
 .credits-footer a {
-    color: inherit;
+    color: white;
     text-decoration: underline;
     pointer-events: auto;
+    transition: all 0.3s ease;
 }
 
 .credits-footer a:hover {
-    opacity: 0.8;
+    opacity: 1;
+    filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+    transform: scale(1.05);
+    display: inline-block;
 }
 
 /* Hide scroll instruction after second page */
 .scroll-instruction {
     animation: fadeIn 0.5s ease-out 1s forwards;
     transition: opacity 0.3s ease;
+}
+
+/* Update Hack Club logo styling */
+.hack-club-logo {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 205px;
+    z-index: 999;
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+}
+
+/* Remove the container styling since we don't need it anymore */
+.app-container > a {
+    display: block;
+    width: fit-content;
+    height: fit-content;
+}
+
+.hack-club-logo:hover {
+    transition: filter 0.3s ease; /* Only transition on hover */
+    filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
 }
