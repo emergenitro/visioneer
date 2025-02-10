@@ -14,6 +14,7 @@ function App() {
     const videoRef = useRef(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [showMobileHeader, setShowMobileHeader] = useState(true);
+    const [showMobileLogo, setShowMobileLogo] = useState(false);
 
     const steps = [
         {
@@ -163,7 +164,8 @@ function App() {
         if (isMobile) {
             const timer = setTimeout(() => {
                 setShowMobileHeader(false);
-            }, 3500); // 3.5s to account for animation
+                setShowMobileLogo(true);
+            }, 3500);
             return () => clearTimeout(timer);
         }
     }, [isMobile]);
@@ -183,6 +185,15 @@ function App() {
                 <div className="mobile-header">
                     this site is cooler on desktop
                 </div>
+            )}
+            {isMobile && showMobileLogo && (
+                <a href="https://hackclub.com">
+                    <img 
+                        src="https://assets.hackclub.com/flag-standalone-wtransparent.svg"
+                        alt="Hack Club"
+                        className="hack-club-logo mobile"
+                    />
+                </a>
             )}
             <div className={`left-panel ${!useCamera ? 'full-width' : ''}`}>
                 <button className="skip-button" onClick={handleSkip}>
