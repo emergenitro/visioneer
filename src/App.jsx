@@ -38,7 +38,7 @@ function App() {
             title: 'how do i submit?',
             content:
                 `just send a pull request to the <a href="https://github.com/hackclub/visioneer" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">visioneer github repo</a> with your project! make sure to add it to the projects file and include a README explaining your project in detail. if you have any questions, feel free to reach out on <a href="https://hackclub.slack.com/archives/C082PCKJYMN" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">#visioneer</a>`,
-            gesture: 'call_me',
+            gesture: 'rock_on',
         },
     ];
 
@@ -49,16 +49,16 @@ function App() {
             setShowEnding(true);
             const jsConfetti = new JSConfetti();
             jsConfetti.addConfetti({
-                confettiNumber: 30,
+                confettiNumber: 10,
                 confettiSize: 6,
                 origin: { x: 0, y: 0.5 },
-                emojis: ['📸', '📷', '🎥', '🤳', '💻']
+                emojis: ['📸', '🎥', '🤳', '💻']
             });
             jsConfetti.addConfetti({
-                confettiNumber: 30,
+                confettiNumber: 10,
                 confettiSize: 6,
                 origin: { x: 1, y: 0.5 },
-                emojis: ['📸', '📷', '🎥', '🤳', '💻']
+                emojis: ['📸', '🎥', '🤳', '💻']
             });
             setTimeout(() => {
                 setShowModal(true);
