@@ -13,7 +13,6 @@ function App() {
     const [showEnding, setShowEnding] = useState(false);
     const videoRef = useRef(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const [showMobileHeader, setShowMobileHeader] = useState(true);
     const [showMobileLogo, setShowMobileLogo] = useState(false);
 
     const steps = [
@@ -163,7 +162,6 @@ function App() {
     useEffect(() => {
         if (isMobile) {
             const timer = setTimeout(() => {
-                setShowMobileHeader(false);
                 setShowMobileLogo(true);
             }, 3000);
             return () => clearTimeout(timer);
@@ -180,11 +178,6 @@ function App() {
                         className="hack-club-logo"
                     />
                 </a>
-            )}
-            {isMobile && showMobileHeader && (
-                <div className="mobile-header">
-                    this site is cooler on desktop
-                </div>
             )}
             {isMobile && showMobileLogo && (
                 <a href="https://hackclub.com">
