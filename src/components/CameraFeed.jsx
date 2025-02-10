@@ -166,7 +166,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 return detectOpenHandGesture(keypoints);
             case 'thumbs_up':
                 return detectThumbsUpGesture(keypoints);
-            case 'victory':
+            case 'peace':
                 return detectVictoryGesture(keypoints);
             case 'call_me':
                 return detectRockOnGesture(keypoints);
@@ -180,7 +180,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
             <div className="camera-container">
                 <div className="error-message">
                     <span>Could not access camera. Please grant permissions.</span>
-                    <a href="#" onClick={(e) => { 
+                    <a href="#" onClick={(e) => {
                         e.preventDefault();
                         initCamera();
                     }}>

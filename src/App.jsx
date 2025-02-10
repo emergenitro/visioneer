@@ -32,7 +32,7 @@ function App() {
             title: 'what can i bag?',
             content:
                 `upon successful submission and evaluation of your visioneer project, participants will receive an <a href="https://www.espressif.com/en/products/devkits/esp-eye/overview" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">ESP32-S3-EYE</a>. this is a great way to get started with computer vision and embedded systems!`,
-            gesture: 'victory',
+            gesture: 'peace',
         },
         {
             title: 'how do i submit?',
@@ -89,7 +89,7 @@ function App() {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
         };
-        
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -109,32 +109,32 @@ function App() {
     useEffect(() => {
         const dustContainer = document.createElement('div');
         dustContainer.className = 'dust-particles';
-        
+
         // Adjust particle count
         const particleCount = isMobile ? 120 : 500;
-        
+
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'dust-particle';
-            
+
             // Random properties
             const size = 1 + Math.random() * 3;
             const duration = 10 + Math.random() * 20;
             const startPosition = Math.random() * 100;
             const delay = Math.random() * -duration;
-            
+
             // Randomly choose between white and cyan with varying intensities
             const isCyan = Math.random() > 0.5;
             const opacity = 0.4 + Math.random() * 0.6;
-            const color = isCyan ? 
-                `hsla(180, 100%, 50%, ${opacity})` : 
+            const color = isCyan ?
+                `hsla(180, 100%, 50%, ${opacity})` :
                 `rgba(255, 255, 255, ${opacity})`;
-            
+
             const startFromTop = Math.random() > 0.5;
-            const travelDistance = startFromTop ? 
+            const travelDistance = startFromTop ?
                 (100 + Math.random() * 300) :
                 (-100 - Math.random() * 300);
-            
+
             particle.style.cssText = `
                 width: ${size}px;
                 height: ${size}px;
@@ -147,15 +147,15 @@ function App() {
                 --travel-distance: ${travelDistance}px;
                 --opacity: ${opacity};
             `;
-            
+
             dustContainer.appendChild(particle);
         }
-        
+
         const leftPanel = document.querySelector('.left-panel');
         if (leftPanel) {
             leftPanel.appendChild(dustContainer);
         }
-        
+
         return () => dustContainer.remove();
     }, [isMobile]);
 
@@ -172,8 +172,8 @@ function App() {
         <div className="app-container">
             {!isMobile && (
                 <a href="https://hackclub.com">
-                    <img 
-                        src="https://assets.hackclub.com/flag-orpheus-top.svg"
+                    <img
+                        src="/flag-orpheus-top.svg"
                         alt="Hack Club"
                         className="hack-club-logo"
                     />
@@ -183,8 +183,8 @@ function App() {
                 <>
                     <div className="mobile-blur-bar" />
                     <a href="https://hackclub.com">
-                        <img 
-                            src="https://assets.hackclub.com/flag-standalone-wtransparent.svg"
+                        <img
+                            src="/flag-standalone-wtransparent.svg"
                             alt="Hack Club"
                             className="hack-club-logo mobile"
                         />
@@ -200,8 +200,8 @@ function App() {
                     steps={steps}
                     isFullScreen={!useCamera}
                 />
-                <Footer 
-                    isFullScreen={!useCamera} 
+                <Footer
+                    isFullScreen={!useCamera}
                     currentStep={currentStep}
                     totalSteps={steps.length}
                 />
