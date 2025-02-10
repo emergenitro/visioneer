@@ -178,10 +178,15 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
     if (error) {
         return (
             <div className="camera-container">
-                <div className="error-message">{error}</div>
-                <button className="restart-button" onClick={initCamera}>
-                    Retry
-                </button>
+                <div className="error-message">
+                    <span>Could not access camera. Please grant permissions.</span>
+                    <a href="#" onClick={(e) => { 
+                        e.preventDefault();
+                        initCamera();
+                    }}>
+                        retry
+                    </a>
+                </div>
             </div>
         );
     }
