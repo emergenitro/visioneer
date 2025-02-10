@@ -12,6 +12,11 @@ const Footer = ({ isFullScreen, currentStep, totalSteps }) => {
 
     return (
         <div className={`credits-footer ${!isFullScreen ? 'cv-mode' : ''}`}>
+            {isMobile && (
+                <p className="mobile-message">
+                    this site is cooler on desktop :)
+                </p>
+            )}
             <p>site by <a href="https://github.com/emergenitro" target="_blank" rel="noopener noreferrer">@emergenitro</a> & <a href="https://github.com/ashfelloff" target="_blank" rel="noopener noreferrer">@ashfelloff</a> - follow us on github for a suprise</p>
             <p>ysws by <a href="https://github.com/emergenitro" target="_blank" rel="noopener noreferrer">@emergenitro</a></p>
             <p>shoutout to espressif!</p>
