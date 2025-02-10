@@ -12,6 +12,8 @@ function App() {
     const endingSectionRef = useRef(null);
     const [showEnding, setShowEnding] = useState(false);
     const videoRef = useRef(null);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    const [showMobileHeader, setShowMobileHeader] = useState(true);
 
     const steps = [
         {
@@ -65,23 +67,18 @@ function App() {
     };
 
     const handleScroll = useCallback((e) => {
-        if (!useCamera && !isScrolling) {
-            // Set scroll threshold to 10 for more sensitive scrolling
-            const scrollThreshold = 10;
-            
-            // Only proceed if scroll is strong enough and we're not at boundaries
-            if (!(currentStep === 0 && e.deltaY < 0) && Math.abs(e.deltaY) > scrollThreshold) {
+        if (!useCamera && !isScrolling && !isMobile) {  // Don't handle scroll events on mobile
+            if (!(currentStep === 0 && e.deltaY < 0) && Math.abs(e.deltaY) > 10) {
                 setIsScrolling(true);
                 if (e.deltaY > 0 && currentStep < steps.length - 1) {
                     setCurrentStep(prev => prev + 1);
                 } else if (e.deltaY < 0 && currentStep > 0) {
                     setCurrentStep(prev => prev - 1);
                 }
-                // Reduce debounce time to 500ms
                 setTimeout(() => setIsScrolling(false), 500);
             }
         }
-    }, [currentStep, useCamera, isScrolling, steps.length]);
+    }, [currentStep, useCamera, isScrolling, steps.length, isMobile]);
 
     useEffect(() => {
         window.addEventListener('wheel', handleScroll);
@@ -89,11 +86,34 @@ function App() {
     }, [handleScroll]);
 
     useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        if (isMobile) {
+            setUseCamera(false);
+            document.body.style.overflow = 'auto';  // Enable scrolling on mobile
+        } else {
+            document.body.style.overflow = 'hidden';  // Keep desktop behavior
+        }
+        return () => {
+            document.body.style.overflow = 'hidden';  // Reset on cleanup
+        };
+    }, [isMobile]);
+
+    useEffect(() => {
         const dustContainer = document.createElement('div');
         dustContainer.className = 'dust-particles';
         
-        // Increase to 500 particles
-        for (let i = 0; i < 500; i++) {
+        // Adjust particle count
+        const particleCount = isMobile ? 120 : 500;
+        
+        for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'dust-particle';
             
@@ -105,16 +125,15 @@ function App() {
             
             // Randomly choose between white and cyan with varying intensities
             const isCyan = Math.random() > 0.5;
-            const opacity = 0.4 + Math.random() * 0.6; // Increased max opacity to 1.0
+            const opacity = 0.4 + Math.random() * 0.6;
             const color = isCyan ? 
-                `hsla(180, 100%, 50%, ${opacity})` : // Cyan
-                `rgba(255, 255, 255, ${opacity})`; // White
+                `hsla(180, 100%, 50%, ${opacity})` : 
+                `rgba(255, 255, 255, ${opacity})`;
             
-            // Randomly decide if particle starts from top or bottom
             const startFromTop = Math.random() > 0.5;
             const travelDistance = startFromTop ? 
-                (100 + Math.random() * 300) :  // Moving down
-                (-100 - Math.random() * 300);  // Moving up
+                (100 + Math.random() * 300) :
+                (-100 - Math.random() * 300);
             
             particle.style.cssText = `
                 width: ${size}px;
@@ -138,17 +157,33 @@ function App() {
         }
         
         return () => dustContainer.remove();
-    }, []);
+    }, [isMobile]);
+
+    useEffect(() => {
+        if (isMobile) {
+            const timer = setTimeout(() => {
+                setShowMobileHeader(false);
+            }, 3500); // 3.5s to account for animation
+            return () => clearTimeout(timer);
+        }
+    }, [isMobile]);
 
     return (
         <div className="app-container">
-            <a href="https://hackclub.com">
-                <img 
-                    src="https://assets.hackclub.com/flag-orpheus-top.svg"
-                    alt="Hack Club"
-                    className="hack-club-logo"
-                />
-            </a>
+            {!isMobile && (
+                <a href="https://hackclub.com">
+                    <img 
+                        src="https://assets.hackclub.com/flag-orpheus-top.svg"
+                        alt="Hack Club"
+                        className="hack-club-logo"
+                    />
+                </a>
+            )}
+            {isMobile && showMobileHeader && (
+                <div className="mobile-header">
+                    this site is cooler on desktop
+                </div>
+            )}
             <div className={`left-panel ${!useCamera ? 'full-width' : ''}`}>
                 <button className="skip-button" onClick={handleSkip}>
                     Skip CV Demo →
