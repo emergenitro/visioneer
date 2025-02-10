@@ -1,5 +1,8 @@
 .modal-overlay {
-    position: fixed;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
