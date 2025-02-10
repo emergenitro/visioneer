@@ -1,9 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
-import ProgressBar from './components/ProgressBar';
-import TextContent from './components/TextContent';
 import Footer from './components/Footer';
+import FinalModal from './components/FinalModal';
+import JSConfetti from 'js-confetti';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
@@ -14,6 +14,7 @@ function App() {
     const videoRef = useRef(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [showMobileLogo, setShowMobileLogo] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const steps = [
         {
@@ -47,11 +48,18 @@ function App() {
             setCurrentStep((prevStep) => prevStep + 1);
         } else {
             setShowEnding(true);
-            // Smooth scroll to the ending section
-            endingSectionRef.current.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
+            const jsConfetti = new JSConfetti();
+            jsConfetti.addConfetti({
+                confettiNumber: 100,
+                origin: { x: 0, y: 0.5 },
             });
+            jsConfetti.addConfetti({
+                confettiNumber: 100,
+                origin: { x: 1, y: 0.5 },
+            });
+            setTimeout(() => {
+                setShowModal(true);
+            }, 500);
         }
     }, [currentStep, steps.length]);
 
@@ -192,29 +200,23 @@ function App() {
                 </>
             )}
             <div className={`left-panel ${!useCamera ? 'full-width' : ''}`}>
-                <button className="skip-button" onClick={handleSkip}>
+                <button className="skip-button" onClick={() => {
+                    setUseCamera(false);
+                    if (videoRef.current?.srcObject) {
+                        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+                    }
+                }}>
                     Skip CV Demo →
                 </button>
-                <StepContent
-                    currentStep={currentStep}
-                    steps={steps}
-                    isFullScreen={!useCamera}
-                />
-                <Footer
-                    isFullScreen={!useCamera}
-                    currentStep={currentStep}
-                    totalSteps={steps.length}
-                />
+                <StepContent currentStep={currentStep} steps={steps} isFullScreen={!useCamera} />
+                <Footer isFullScreen={!useCamera} currentStep={currentStep} totalSteps={steps.length} />
             </div>
             {useCamera && !isMobile && (
                 <div className="right-panel">
-                    <CameraFeed
-                        onGestureDetected={handleGestureDetected}
-                        currentStep={currentStep}
-                        steps={steps}
-                    />
+                    <CameraFeed onGestureDetected={handleGestureDetected} currentStep={currentStep} steps={steps} />
                 </div>
             )}
+            {showModal && <FinalModal onClose={() => setShowModal(false)} />}
         </div>
     );
 }
