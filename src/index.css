@@ -634,3 +634,172 @@ button {
     transition: filter 0.3s ease; /* Only transition on hover */
     filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
 }
+
+@media (max-width: 768px) {
+    .left-panel {
+        width: 100%;
+        padding: 2rem 1.5rem;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+    }
+
+    .right-panel {
+        display: none;
+    }
+
+    .hack-club-logo {
+        display: none;  /* Hide the logo on mobile */
+    }
+
+    .mobile-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.2rem 0;  /* Changed to vertical padding only */
+        background: white;
+        color: black;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.9em;
+        text-align: center;
+        z-index: 999;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 3.5rem;  /* Added fixed height */
+        animation: fadeOutUp 0.5s ease-out 3s forwards;
+    }
+
+    .mobile-content {
+        padding-top: 4.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .mobile-step {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .mobile-step h1[data-title="visioneer"] {
+        font-size: 3em;
+        margin-bottom: 0.75rem;
+    }
+
+    .mobile-step h1:not([data-title="visioneer"]) {
+        font-size: 1.5em;
+        margin-bottom: 0.75rem;
+    }
+
+    .mobile-step p {
+        font-size: 1em;
+        line-height: 1.5;
+        opacity: 0.8;
+    }
+
+    .mobile-step p a {
+        color: white;
+        text-decoration: underline;
+        cursor: pointer;
+        position: relative;
+        z-index: 10;
+        transition: all 0.3s ease;
+        filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+        display: inline-block;
+    }
+
+    .mobile-step p a:hover {
+        opacity: 1;
+        filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+    }
+
+    .page-indicators,
+    .scroll-instruction,
+    .step-content {
+        display: none;
+    }
+
+    .credits-footer {
+        position: relative;
+        margin-top: 2.5rem;
+        width: 100%;
+        padding: 0;  /* Remove padding */
+        font-size: 0.85em;
+        opacity: 0.8;
+        text-align: left;
+        background: none;
+        backdrop-filter: none;
+        font-family: 'PT Serif', serif;  /* Match main text font */
+        filter: none;  /* Remove glow effect */
+        animation: none;  /* Remove animation */
+        transition: none;  /* Remove transitions */
+    }
+
+    .credits-footer p {
+        margin: 0.3rem 0;
+        line-height: 1.5;  /* Match text line height */
+    }
+
+    .credits-footer a {
+        color: inherit;
+        text-decoration: underline;
+        transition: none;  /* Remove transitions */
+        filter: none;  /* Remove glow effect */
+    }
+
+    .credits-footer a:hover {
+        opacity: 0.7;
+        transform: none;  /* Remove scale effect */
+        filter: none;  /* Remove glow effect */
+    }
+
+    .mobile-notice {
+        display: none !important;
+    }
+
+    /* Make sure content is scrollable */
+    html, body {
+        overflow: auto;
+        height: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+.mobile-notice {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7em;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    opacity: 0.8;
+    display: none;
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+    pointer-events: none;
+}
+
+@keyframes fadeOutUp {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
