@@ -165,7 +165,7 @@ function App() {
             const timer = setTimeout(() => {
                 setShowMobileHeader(false);
                 setShowMobileLogo(true);
-            }, 3500);
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [isMobile]);
