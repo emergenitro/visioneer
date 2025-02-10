@@ -184,7 +184,7 @@ function App() {
                     <div className="mobile-blur-bar" />
                     <a href="https://hackclub.com">
                         <img 
-                            src="https://assets.hackclub.com/flag-standalone-wtransparent.svg"
+                            src="https://assets.hackclub.com/flag-standalone.svg"
                             alt="Hack Club"
                             className="hack-club-logo mobile"
                         />
