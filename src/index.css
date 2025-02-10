@@ -651,7 +651,18 @@ button {
     }
 
     .hack-club-logo {
-        display: none;  /* Hide the logo on mobile */
+        display: none;  /* Hide desktop logo */
+    }
+
+    .hack-club-logo.mobile {
+        display: block;
+        width: 60px;
+        position: fixed;
+        top: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        animation: fadeIn 0.5s ease-out forwards;
     }
 
     .mobile-header {
@@ -801,5 +812,16 @@ button {
     to {
         opacity: 0;
         transform: translateY(-100%);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -10px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
     }
 }
