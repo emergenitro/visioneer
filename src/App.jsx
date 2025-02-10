@@ -212,22 +212,6 @@ function App() {
                     />
                 </div>
             )}
-            {showEnding && (
-                <div ref={endingSectionRef} className="ending-section">
-                    <h2>Thank you for participating!</h2>
-                    <p>
-                        We appreciate your interest in Visioneer. We hope you enjoyed the
-                        experience and learned something new.
-                    </p>
-                    <p>
-                        Feel free to explore more about our organization and other exciting
-                        opportunities on our website.
-                    </p>
-                    <a href="https://example.com" target="_blank" rel="noopener noreferrer">
-                        Visit our website
-                    </a>
-                </div>
-            )}
         </div>
     );
 }
