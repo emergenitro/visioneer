@@ -102,7 +102,13 @@ function App() {
             const duration = 10 + Math.random() * 20;
             const startPosition = Math.random() * 100;
             const delay = Math.random() * -duration;
-            const hue = Math.random() * 360;
+            
+            // Randomly choose between white and cyan with varying intensities
+            const isCyan = Math.random() > 0.5;
+            const opacity = 0.4 + Math.random() * 0.6; // Increased max opacity to 1.0
+            const color = isCyan ? 
+                `hsla(180, 100%, 50%, ${opacity})` : // Cyan
+                `rgba(255, 255, 255, ${opacity})`; // White
             
             // Randomly decide if particle starts from top or bottom
             const startFromTop = Math.random() > 0.5;
@@ -116,11 +122,11 @@ function App() {
                 left: ${startPosition}%;
                 ${startFromTop ? 'top: -20px' : 'bottom: -20px'};
                 opacity: 0;
-                background: hsla(${hue}, 70%, 50%, 0.6);
+                background: ${color};
                 animation: ${startFromTop ? 'floatDown' : 'floatUp'} ${duration}s linear infinite;
                 animation-delay: ${delay}s;
                 --travel-distance: ${travelDistance}px;
-                --opacity: ${0.3 + Math.random() * 0.5};
+                --opacity: ${opacity};
             `;
             
             dustContainer.appendChild(particle);
@@ -136,6 +142,13 @@ function App() {
 
     return (
         <div className="app-container">
+            <a href="https://hackclub.com">
+                <img 
+                    src="https://assets.hackclub.com/flag-orpheus-top.svg"
+                    alt="Hack Club"
+                    className="hack-club-logo"
+                />
+            </a>
             <div className={`left-panel ${!useCamera ? 'full-width' : ''}`}>
                 <button className="skip-button" onClick={handleSkip}>
                     Skip CV Demo →
