@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
-    const [useCamera, setUseCamera] = useState(true);
+    const [useCamera, setUseCamera] = useState(!window.innerWidth <= 768);
     const [isScrolling, setIsScrolling] = useState(false);
     const endingSectionRef = useRef(null);
     const [showEnding, setShowEnding] = useState(false);
@@ -97,12 +97,12 @@ function App() {
     useEffect(() => {
         if (isMobile) {
             setUseCamera(false);
-            document.body.style.overflow = 'auto';  // Enable scrolling on mobile
+            document.body.style.overflow = 'auto';
         } else {
-            document.body.style.overflow = 'hidden';  // Keep desktop behavior
+            document.body.style.overflow = 'hidden';
         }
         return () => {
-            document.body.style.overflow = 'hidden';  // Reset on cleanup
+            document.body.style.overflow = 'hidden';
         };
     }, [isMobile]);
 
@@ -199,7 +199,7 @@ function App() {
                     totalSteps={steps.length}
                 />
             </div>
-            {useCamera && (
+            {useCamera && !isMobile && (
                 <div className="right-panel">
                     <CameraFeed
                         onGestureDetected={handleGestureDetected}
