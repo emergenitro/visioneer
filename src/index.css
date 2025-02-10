@@ -742,34 +742,37 @@ button {
         position: relative;
         margin-top: 2.5rem;
         width: 100%;
-        padding: 0;  /* Remove padding */
+        padding: 0;
         font-size: 0.85em;
         opacity: 0.8;
-        text-align: left;
+        text-align: center;
         background: none;
         backdrop-filter: none;
-        font-family: 'PT Serif', serif;  /* Match main text font */
-        filter: none;  /* Remove glow effect */
-        animation: none;  /* Remove animation */
-        transition: none;  /* Remove transitions */
+        font-family: 'PT Serif', serif;
     }
 
     .credits-footer p {
         margin: 0.3rem 0;
-        line-height: 1.5;  /* Match text line height */
+        line-height: 1.5;
+    }
+
+    .credits-footer .mobile-message {
+        margin-bottom: 1.5rem;
+        font-style: italic;
+        opacity: 0.7;
     }
 
     .credits-footer a {
         color: inherit;
         text-decoration: underline;
-        transition: none;  /* Remove transitions */
-        filter: none;  /* Remove glow effect */
+        transition: none;
+        filter: none;
     }
 
     .credits-footer a:hover {
         opacity: 0.7;
-        transform: none;  /* Remove scale effect */
-        filter: none;  /* Remove glow effect */
+        transform: none;
+        filter: none;
     }
 
     .mobile-notice {
