@@ -179,14 +179,17 @@ function App() {
                     />
                 </a>
             )}
-            {isMobile && showMobileLogo && (
-                <a href="https://hackclub.com">
-                    <img 
-                        src="https://assets.hackclub.com/flag-standalone-wtransparent.svg"
-                        alt="Hack Club"
-                        className="hack-club-logo mobile"
-                    />
-                </a>
+            {isMobile && (
+                <>
+                    <div className="mobile-blur-bar" />
+                    <a href="https://hackclub.com">
+                        <img 
+                            src="https://assets.hackclub.com/flag-standalone-wtransparent.svg"
+                            alt="Hack Club"
+                            className="hack-club-logo mobile"
+                        />
+                    </a>
+                </>
             )}
             <div className={`left-panel ${!useCamera ? 'full-width' : ''}`}>
                 <button className="skip-button" onClick={handleSkip}>
