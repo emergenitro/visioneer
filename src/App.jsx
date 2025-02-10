@@ -2,7 +2,6 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
 import Footer from './components/Footer';
-import FinalModal from './components/FinalModal';
 import JSConfetti from 'js-confetti';
 
 function App() {
@@ -50,12 +49,16 @@ function App() {
             setShowEnding(true);
             const jsConfetti = new JSConfetti();
             jsConfetti.addConfetti({
-                confettiNumber: 100,
+                confettiNumber: 30,
+                confettiSize: 6,
                 origin: { x: 0, y: 0.5 },
+                emojis: ['📸', '📷', '🎥', '🤳', '💻']
             });
             jsConfetti.addConfetti({
-                confettiNumber: 100,
+                confettiNumber: 30,
+                confettiSize: 6,
                 origin: { x: 1, y: 0.5 },
+                emojis: ['📸', '📷', '🎥', '🤳', '💻']
             });
             setTimeout(() => {
                 setShowModal(true);
@@ -216,7 +219,6 @@ function App() {
                     <CameraFeed onGestureDetected={handleGestureDetected} currentStep={currentStep} steps={steps} />
                 </div>
             )}
-            {showModal && <FinalModal onClose={() => setShowModal(false)} />}
         </div>
     );
 }
