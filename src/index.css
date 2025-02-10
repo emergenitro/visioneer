@@ -656,13 +656,13 @@ button {
 
     .hack-club-logo.mobile {
         display: block;
-        width: 60px;
+        width: 120px;  /* Doubled from 60px */
         position: fixed;
         top: 1rem;
         left: 50%;
         transform: translateX(-50%);
         opacity: 0;
-        animation: fadeIn 0.5s ease-out forwards;
+        animation: fadeIn 0.3s ease-out forwards;  /* Made animation faster */
     }
 
     .mobile-header {
