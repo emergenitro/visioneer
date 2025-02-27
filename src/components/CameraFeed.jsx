@@ -255,7 +255,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps, onCameraMount }) {
                 return detectThumbsUpGesture(keypoints);
             case 'peace':
                 return detectVictoryGesture(keypoints);
-            case 'call_me':
+            case 'rock_on':
                 return detectRockOnGesture(keypoints);
             default:
                 return false;
