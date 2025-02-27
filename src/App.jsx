@@ -4,14 +4,16 @@ import StepContent from './components/StepContent';
 import ProgressBar from './components/ProgressBar';
 import TextContent from './components/TextContent';
 import Footer from './components/Footer';
+import EmojiCelebration from './components/EmojiCelebration';
+import './components/EmojiCelebration.css';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
     const [useCamera, setUseCamera] = useState(!window.innerWidth <= 768);
     const [isScrolling, setIsScrolling] = useState(false);
-    const endingSectionRef = useRef(null);
     const [showEnding, setShowEnding] = useState(false);
-    const videoRef = useRef(null);
+    const [celebrationActive, setCelebrationActive] = useState(false);
+    const [cameraCleanup, setCameraCleanup] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [showMobileLogo, setShowMobileLogo] = useState(false);
 
@@ -46,12 +48,14 @@ function App() {
         if (currentStep < steps.length - 1) {
             setCurrentStep((prevStep) => prevStep + 1);
         } else {
+            // Last gesture detected - show celebration!
+            setCelebrationActive(true);
             setShowEnding(true);
-            // Smooth scroll to the ending section
-            endingSectionRef.current.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            });
+
+            // Reset celebration after a few seconds
+            setTimeout(() => {
+                setCelebrationActive(false);
+            }, 4000);
         }
     }, [currentStep, steps.length]);
 
@@ -60,11 +64,19 @@ function App() {
     };
 
     const handleSkip = () => {
-        setUseCamera(false);
-        if (videoRef.current?.srcObject) {
-            videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+        // Clean up camera if cleanup function exists
+        if (cameraCleanup) {
+            cameraCleanup();
         }
+        setUseCamera(false);
     };
+
+    const handleCameraMount = useCallback((cameraInterface) => {
+        // Store the camera cleanup function
+        if (cameraInterface && cameraInterface.cleanup) {
+            setCameraCleanup(() => cameraInterface.cleanup);
+        }
+    }, []);
 
     const handleScroll = useCallback((e) => {
         if (!useCamera && !isScrolling && !isMobile) {  // Don't handle scroll events on mobile
@@ -96,6 +108,10 @@ function App() {
 
     useEffect(() => {
         if (isMobile) {
+            // Clean up camera on mobile
+            if (cameraCleanup) {
+                cameraCleanup();
+            }
             setUseCamera(false);
             document.body.style.overflow = 'auto';
         } else {
@@ -104,7 +120,7 @@ function App() {
         return () => {
             document.body.style.overflow = 'hidden';
         };
-    }, [isMobile]);
+    }, [isMobile, cameraCleanup]);
 
     useEffect(() => {
         const dustContainer = document.createElement('div');
@@ -168,6 +184,15 @@ function App() {
         }
     }, [isMobile]);
 
+    // Clean up camera when component unmounts
+    useEffect(() => {
+        return () => {
+            if (cameraCleanup) {
+                cameraCleanup();
+            }
+        };
+    }, [cameraCleanup]);
+
     return (
         <div className="app-container">
             {!isMobile && (
@@ -192,14 +217,29 @@ function App() {
                 </>
             )}
             <div className={`left-panel ${!useCamera ? 'full-width' : ''}`}>
-                <button className="skip-button" onClick={handleSkip}>
-                    Skip CV Demo →
-                </button>
+                {useCamera && (
+                    <button className="skip-button" onClick={handleSkip}>
+                        Skip CV Demo →
+                    </button>
+                )}
                 <StepContent
                     currentStep={currentStep}
                     steps={steps}
                     isFullScreen={!useCamera}
                 />
+
+                {/* Show celebration end content if we've reached the end */}
+                {showEnding && useCamera && (
+                    <div className="celebration-section">
+                        <h2>Mission Complete! 🎉</h2>
+                        <p>You've mastered all the gestures! Time to build your own computer vision project.</p>
+                        <div className="celebration-buttons">
+                            <button onClick={handleSkip}>View All Instructions</button>
+                            <button onClick={() => window.location.href = "https://github.com/hackclub/visioneer"}>Visit GitHub Repo</button>
+                        </div>
+                    </div>
+                )}
+
                 <Footer
                     isFullScreen={!useCamera}
                     currentStep={currentStep}
@@ -212,9 +252,13 @@ function App() {
                         onGestureDetected={handleGestureDetected}
                         currentStep={currentStep}
                         steps={steps}
+                        onCameraMount={handleCameraMount}
                     />
                 </div>
             )}
+
+            {/* Emoji celebration component */}
+            <EmojiCelebration active={celebrationActive} />
         </div>
     );
 }

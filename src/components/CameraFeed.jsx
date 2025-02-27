@@ -3,6 +3,10 @@ import * as handPoseDetection from '@tensorflow-models/hand-pose-detection';
 import { drawHandSkeleton } from './handUtils';
 import GestureOverlay from './GestureOverlay';
 
+// Preload the model outside component to cache it
+let cachedDetector = null;
+let modelLoadPromise = null;
+
 function getBoundingBox(keypoints) {
     const xs = keypoints.map((point) => point.x);
     const ys = keypoints.map((point) => point.y);
@@ -16,52 +20,139 @@ function getBoundingBox(keypoints) {
     };
 }
 
-function CameraFeed({ onGestureDetected, currentStep, steps }) {
+function CameraFeed({ onGestureDetected, currentStep, steps, onCameraMount }) {
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const detectorRef = useRef(null);
     const animationFrameIdRef = useRef(null);
-    const cooldownRef = useRef(false); // replaced cooldown state
+    const cooldownRef = useRef(false);
+    const streamRef = useRef(null);
 
-    const [loadingMessage, setLoadingMessage] = useState(null);
+    const [loadingMessage, setLoadingMessage] = useState('Initializing...');
+    const [loadingProgress, setLoadingProgress] = useState(0);
     const [error, setError] = useState(null);
 
-    const initCamera = useCallback(async () => {
+    // Function to properly clean up camera resources
+    const cleanupCamera = useCallback(() => {
+        if (animationFrameIdRef.current) {
+            cancelAnimationFrame(animationFrameIdRef.current);
+            animationFrameIdRef.current = null;
+        }
+
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop());
+            streamRef.current = null;
+        }
+    }, []);
+
+    // Load the model with caching
+    const loadModel = useCallback(async () => {
         try {
-            setError(null);
-            setLoadingMessage('Loading models...');
+            setLoadingProgress(10);
+            setLoadingMessage('Initializing model...');
+
+            // Use cached detector if available
+            if (cachedDetector) {
+                detectorRef.current = cachedDetector;
+                setLoadingProgress(50);
+                return;
+            }
+
+            // Use cached loading promise if one is already in progress
+            if (modelLoadPromise) {
+                setLoadingMessage('Waiting for model...');
+                cachedDetector = await modelLoadPromise;
+                detectorRef.current = cachedDetector;
+                setLoadingProgress(50);
+                return;
+            }
+
+            // Start new model loading
             const model = handPoseDetection.SupportedModels.MediaPipeHands;
             const detectorConfig = {
                 runtime: 'mediapipe',
                 solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/hands',
-                modelType: 'full',
+                modelType: 'lite', // Use lite model for faster loading
                 maxHands: 1,
             };
-            detectorRef.current = await handPoseDetection.createDetector(model, detectorConfig);
 
-            setLoadingMessage('Switching on camera...');
+            // Create and cache the loading promise
+            modelLoadPromise = handPoseDetection.createDetector(model, detectorConfig);
+
+            setLoadingMessage('Loading model...');
+            cachedDetector = await modelLoadPromise;
+            detectorRef.current = cachedDetector;
+            setLoadingProgress(50);
+        } catch (err) {
+            console.error('Error loading model:', err);
+            setError('Failed to initialize hand tracking. Please refresh.');
+            modelLoadPromise = null;
+        }
+    }, []);
+
+    // Initialize camera
+    const initCamera = useCallback(async () => {
+        try {
+            setError(null);
+            await loadModel();
+
+            setLoadingMessage('Accessing camera...');
+            setLoadingProgress(60);
+
             const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 640, height: 480, facingMode: 'user' },
+                video: {
+                    width: { ideal: 640 },
+                    height: { ideal: 480 },
+                    facingMode: 'user',
+                    frameRate: { ideal: 30 }
+                },
             });
+
+            streamRef.current = stream;
 
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
                 videoRef.current.setAttribute('playsinline', '');
                 videoRef.current.setAttribute('autoplay', '');
-                videoRef.current.onloadeddata = () => {
-                    videoRef.current.play().catch((err) => console.error('Play error:', err));
-                };
+
+                await new Promise(resolve => {
+                    videoRef.current.onloadeddata = () => {
+                        resolve();
+                    };
+                });
+
+                videoRef.current.play().catch((err) => console.error('Play error:', err));
             }
+
+            setLoadingProgress(100);
             setLoadingMessage(null);
+
+            // Notify parent component that camera is mounted and ready
+            if (onCameraMount) {
+                onCameraMount({
+                    cleanup: cleanupCamera,
+                    videoRef: videoRef.current
+                });
+            }
         } catch (err) {
             console.error('Error initializing camera:', err);
             setError('Could not access camera. Please grant permissions.');
         }
-    }, []);
+    }, [loadModel, cleanupCamera, onCameraMount]);
 
     useEffect(() => {
         let isMounted = true;
         initCamera();
+
+        return () => {
+            isMounted = false;
+            cleanupCamera();
+        };
+    }, [initCamera, cleanupCamera]);
+
+    useEffect(() => {
+        if (!detectorRef.current || !videoRef.current || loadingMessage) return;
+
         const detectGestures = async () => {
             if (
                 videoRef.current &&
@@ -74,12 +165,14 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 } catch (err) {
                     console.error('Error during hand detection:', err);
                 }
+
                 const canvas = canvasRef.current;
+                if (!canvas) return;
+
                 const ctx = canvas.getContext('2d');
                 canvas.width = videoRef.current.videoWidth;
                 canvas.height = videoRef.current.videoHeight;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                // Draw the video feed once
                 ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
                 if (hands.length > 0) {
@@ -93,28 +186,22 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                         onGestureDetected();
                         setTimeout(() => {
                             cooldownRef.current = false;
-                        }, 5000);
+                        }, 3000); // Reduced cooldown time
                     }
                 }
             }
-            if (isMounted) animationFrameIdRef.current = requestAnimationFrame(detectGestures);
+
+            animationFrameIdRef.current = requestAnimationFrame(detectGestures);
         };
 
         detectGestures();
 
         return () => {
-            isMounted = false;
             if (animationFrameIdRef.current) {
                 cancelAnimationFrame(animationFrameIdRef.current);
             }
-            if (detectorRef.current) {
-                detectorRef.current.dispose();
-            }
-            if (videoRef.current?.srcObject) {
-                videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-            }
         };
-    }, [onGestureDetected, currentStep, steps, initCamera]); // removed cooldown from deps
+    }, [onGestureDetected, currentStep, steps, loadingMessage]);
 
     // Gesture detection functions
     const detectOpenHandGesture = (keypoints) => {
@@ -179,7 +266,7 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
         return (
             <div className="camera-container">
                 <div className="error-message">
-                    <span>Could not access camera. Please grant permissions.</span>
+                    <span>{error}</span>
                     <a href="#" onClick={(e) => {
                         e.preventDefault();
                         initCamera();
@@ -197,6 +284,12 @@ function CameraFeed({ onGestureDetected, currentStep, steps }) {
                 <div className="loading-overlay">
                     <div className="loader"></div>
                     <p>{loadingMessage}</p>
+                    <div className="loading-progress-bar">
+                        <div
+                            className="loading-progress"
+                            style={{ width: `${loadingProgress}%` }}
+                        ></div>
+                    </div>
                 </div>
             )}
             <video ref={videoRef} style={{ display: 'none' }} />
