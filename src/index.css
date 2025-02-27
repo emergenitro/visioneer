@@ -68,9 +68,11 @@ body {
     transform: translateY(0) rotate(0deg);
     opacity: 0;
   }
+
   50% {
     opacity: var(--opacity);
   }
+
   100% {
     transform: translateY(var(--travel-distance)) rotate(360deg);
     opacity: 0;
@@ -82,9 +84,11 @@ body {
     transform: translateY(0) rotate(0deg);
     opacity: 0;
   }
+
   50% {
     opacity: var(--opacity);
   }
+
   100% {
     transform: translateY(var(--travel-distance)) rotate(-360deg);
     opacity: 0;
@@ -112,10 +116,11 @@ body {
   justify-content: center;
   gap: 2rem;
   margin-top: 2rem;
-  opacity: 0; /* Start invisible */
+  opacity: 0;
+  /* Start invisible */
   transform: translateY(20px);
   transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   z-index: 5;
 }
@@ -146,7 +151,8 @@ body {
 
 /* Reduce other headings by 70% (original 40% + additional 30%) */
 .step-content h1:not([data-title="visioneer"]) {
-  font-size: 1.89em; /* 4.5 * 0.3 = 1.89 (70% reduction) */
+  font-size: 1.89em;
+  /* 4.5 * 0.3 = 1.89 (70% reduction) */
   margin: 0;
   line-height: 1.1;
   font-weight: 600;
@@ -333,7 +339,7 @@ body {
   background: rgba(255, 255, 255, 0.1);
   padding: 20px 30px;
   border-radius: 12px;
-  box-shadow: 
+  box-shadow:
     0 4px 24px -1px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   transition: opacity 0.3s ease-in-out;
@@ -517,6 +523,7 @@ button {
     opacity: 0;
     transform: translate(-50%, 10px);
   }
+
   to {
     opacity: 0.6;
     transform: translate(-50%, 0);
@@ -551,308 +558,465 @@ button {
 
 /* Credits footer styling */
 .credits-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1rem;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7em;
-    text-align: center;
-    opacity: 0;
-    z-index: 10;
-    pointer-events: none;
-    transition: all 0.3s ease;
-    animation: fadeInUp 0.5s ease-out 0.3s forwards;
-    color: white;
-    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7em;
+  text-align: center;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.5s ease-out 0.3s forwards;
+  color: white;
+  filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
 }
 
 /* Footer styling for CV mode */
 .credits-footer.cv-mode {
-    width: 40%;
-    font-size: 0.6em;
-    padding: 0.5rem;
-    opacity: 0.4;
-    animation: none;
+  width: 40%;
+  font-size: 0.6em;
+  padding: 0.5rem;
+  opacity: 0.4;
+  animation: none;
 }
 
 /* Add fadeInUp animation */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 0.6;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
 }
 
 .credits-footer p {
-    margin: 0.2rem 0;
+  margin: 0.2rem 0;
 }
 
 .credits-footer a {
-    color: white;
-    text-decoration: underline;
-    pointer-events: auto;
-    transition: all 0.3s ease;
+  color: white;
+  text-decoration: underline;
+  pointer-events: auto;
+  transition: all 0.3s ease;
 }
 
 .credits-footer a:hover {
-    opacity: 1;
-    filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
-    transform: scale(1.05);
-    display: inline-block;
+  opacity: 1;
+  filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+  transform: scale(1.05);
+  display: inline-block;
 }
 
 /* Hide scroll instruction after second page */
 .scroll-instruction {
-    animation: fadeIn 0.5s ease-out 1s forwards;
-    transition: opacity 0.3s ease;
+  animation: fadeIn 0.5s ease-out 1s forwards;
+  transition: opacity 0.3s ease;
 }
 
 /* Update Hack Club logo styling */
 .hack-club-logo {
-    position: absolute;
-    top: 0;
-    left: 10px;
-    width: 205px;
-    z-index: 999;
-    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 205px;
+  z-index: 999;
+  filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
 }
 
 /* Remove the container styling since we don't need it anymore */
-.app-container > a {
-    display: block;
-    width: fit-content;
-    height: fit-content;
+.app-container>a {
+  display: block;
+  width: fit-content;
+  height: fit-content;
 }
 
 .hack-club-logo:hover {
-    transition: filter 0.3s ease; /* Only transition on hover */
-    filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+  transition: filter 0.3s ease;
+  /* Only transition on hover */
+  filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
 }
 
 @media (max-width: 768px) {
-    .left-panel {
-        width: 100%;
-        padding: 2rem 1.5rem;
-        height: auto;
-        min-height: 100vh;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-    }
+  .left-panel {
+    width: 100%;
+    padding: 2rem 1.5rem;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+  }
 
-    .right-panel {
-        display: none;
-    }
+  .right-panel {
+    display: none;
+  }
 
-    .hack-club-logo {
-        display: none;  /* Hide desktop logo */
-    }
+  .hack-club-logo {
+    display: none;
+    /* Hide desktop logo */
+  }
 
-    .hack-club-logo.mobile {
-        display: block;
-        width: 120px;
-        position: fixed;
-        top: 1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-        /* Remove animation and opacity */
-        opacity: 1;
-        animation: none;
-    }
+  .hack-club-logo.mobile {
+    display: block;
+    width: 120px;
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    /* Remove animation and opacity */
+    opacity: 1;
+    animation: none;
+  }
 
-    /* Add blur gradient behind logo */
-    .mobile-blur-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 5rem;  /* Slightly taller than logo area */
-        background: linear-gradient(to bottom, 
-            rgba(0, 128, 128, 1) 0%,
-            rgba(0, 128, 128, 0.8) 60%,
-            rgba(0, 128, 128, 0) 100%
-        );
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        z-index: 999;
-        pointer-events: none;
-    }
+  /* Add blur gradient behind logo */
+  .mobile-blur-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5rem;
+    /* Slightly taller than logo area */
+    background: linear-gradient(to bottom,
+        rgba(0, 128, 128, 1) 0%,
+        rgba(0, 128, 128, 0.8) 60%,
+        rgba(0, 128, 128, 0) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 999;
+    pointer-events: none;
+  }
 
-    .mobile-header {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        padding: 1.2rem 0;  /* Changed to vertical padding only */
-        background: white;
-        color: black;
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 0.9em;
-        text-align: center;
-        z-index: 999;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 3.5rem;  /* Added fixed height */
-        animation: fadeOutUp 0.5s ease-out 3s forwards;
-    }
+  .mobile-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.2rem 0;
+    /* Changed to vertical padding only */
+    background: white;
+    color: black;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9em;
+    text-align: center;
+    z-index: 999;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 3.5rem;
+    /* Added fixed height */
+    animation: fadeOutUp 0.5s ease-out 3s forwards;
+  }
 
-    .mobile-content {
-        padding-top: 6rem;
-        display: flex;
-        flex-direction: column;
-        gap: 2.5rem;
-        -webkit-overflow-scrolling: touch;
-        position: relative;
-        z-index: 1001;  /* Ensure content is above blur bar */
-    }
+  .mobile-content {
+    padding-top: 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    z-index: 1001;
+    /* Ensure content is above blur bar */
+  }
 
-    .mobile-step {
-        opacity: 1;
-        transform: none;
-        transition: none;
-    }
+  .mobile-step {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 
-    .mobile-step h1[data-title="visioneer"] {
-        font-size: 3em;
-        margin-bottom: 0.75rem;
-    }
+  .mobile-step h1[data-title="visioneer"] {
+    font-size: 3em;
+    margin-bottom: 0.75rem;
+  }
 
-    .mobile-step h1:not([data-title="visioneer"]) {
-        font-size: 1.5em;
-        margin-bottom: 0.75rem;
-    }
+  .mobile-step h1:not([data-title="visioneer"]) {
+    font-size: 1.5em;
+    margin-bottom: 0.75rem;
+  }
 
-    .mobile-step p {
-        font-size: 1em;
-        line-height: 1.5;
-        opacity: 0.8;
-    }
+  .mobile-step p {
+    font-size: 1em;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
 
-    .mobile-step p a {
-        color: white;
-        text-decoration: underline;
-        cursor: pointer;
-        position: relative;
-        z-index: 1001;  /* Increased z-index to be above blur bar and logo */
-        transition: all 0.3s ease;
-        filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
-        display: inline-block;
-        pointer-events: auto;  /* Ensure links are clickable */
-    }
+  .mobile-step p a {
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+    position: relative;
+    z-index: 1001;
+    /* Increased z-index to be above blur bar and logo */
+    transition: all 0.3s ease;
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+    display: inline-block;
+    pointer-events: auto;
+    /* Ensure links are clickable */
+  }
 
-    .mobile-step p a:hover {
-        opacity: 1;
-        filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
-    }
+  .mobile-step p a:hover {
+    opacity: 1;
+    filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+  }
 
-    .page-indicators,
-    .scroll-instruction,
-    .step-content {
-        display: none;
-    }
+  .page-indicators,
+  .scroll-instruction,
+  .step-content {
+    display: none;
+  }
 
-    .credits-footer {
-        position: relative;
-        margin-top: 2.5rem;
-        width: 100%;
-        padding: 0;
-        font-size: 0.85em;
-        opacity: 0.8;
-        text-align: center;
-        background: none;
-        backdrop-filter: none;
-        font-family: 'PT Serif', serif;
-        z-index: 1001;  /* Ensure footer is above blur bar */
-        pointer-events: auto;  /* Make footer clickable */
-    }
+  .credits-footer {
+    position: relative;
+    margin-top: 2.5rem;
+    width: 100%;
+    padding: 0;
+    font-size: 0.85em;
+    opacity: 0.8;
+    text-align: center;
+    background: none;
+    backdrop-filter: none;
+    font-family: 'PT Serif', serif;
+    z-index: 1001;
+    /* Ensure footer is above blur bar */
+    pointer-events: auto;
+    /* Make footer clickable */
+  }
 
-    .credits-footer p {
-        margin: 0.3rem 0;
-        line-height: 1.5;
-    }
+  .credits-footer p {
+    margin: 0.3rem 0;
+    line-height: 1.5;
+  }
 
-    .credits-footer .mobile-message {
-        margin-bottom: 1.5rem;
-        font-style: italic;
-        opacity: 0.7;
-    }
+  .credits-footer .mobile-message {
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    opacity: 0.7;
+  }
 
-    .credits-footer a {
-        color: inherit;
-        text-decoration: underline;
-        transition: none;
-        filter: none;
-        pointer-events: auto;  /* Ensure footer links are clickable */
-        position: relative;
-        z-index: 1001;
-    }
+  .credits-footer a {
+    color: inherit;
+    text-decoration: underline;
+    transition: none;
+    filter: none;
+    pointer-events: auto;
+    /* Ensure footer links are clickable */
+    position: relative;
+    z-index: 1001;
+  }
 
-    .credits-footer a:hover {
-        opacity: 0.7;
-        transform: none;
-        filter: none;
-    }
+  .credits-footer a:hover {
+    opacity: 0.7;
+    transform: none;
+    filter: none;
+  }
 
-    .mobile-notice {
-        display: none !important;
-    }
+  .mobile-notice {
+    display: none !important;
+  }
 
-    /* Make sure content is scrollable */
-    html, body {
-        overflow: auto;
-        height: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+  /* Make sure content is scrollable */
+  html,
+  body {
+    overflow: auto;
+    height: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .mobile-notice {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7em;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 9999;
-    opacity: 0.8;
-    display: none;
-    filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
-    pointer-events: none;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7em;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  opacity: 0.8;
+  display: none;
+  filter: brightness(1.3) drop-shadow(0 0 10px rgba(0, 255, 255, 0.4));
+  pointer-events: none;
 }
 
 @keyframes fadeOutUp {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateY(-100%);
-    }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -10px);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0);
-    }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+
+
+/* Emoji Celebration Styles */
+.emoji-celebration {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.emoji-particle {
+  position: absolute;
+  will-change: transform, opacity;
+}
+
+@keyframes moveEmojiRight {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateX(70vw) translateY(-50vh) rotate(180deg);
+  }
+
+  100% {
+    transform: translateX(120vw) translateY(-80vh) rotate(360deg);
+  }
+}
+
+@keyframes moveEmojiLeft {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateX(-70vw) translateY(-50vh) rotate(-180deg);
+  }
+
+  100% {
+    transform: translateX(-120vw) translateY(-80vh) rotate(-360deg);
+  }
+}
+
+@keyframes fadeAway {
+  0% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Loading progress bar styling */
+.loading-progress-bar {
+  width: 80%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.loading-progress {
+  height: 100%;
+  background: cyan;
+  width: 0%;
+  transition: width 0.3s ease-out;
+}
+
+/* Celebration ending section styling */
+.celebration-section {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 100;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  color: white;
+  animation: fadeInScale 0.5s forwards;
+  max-width: 80%;
+}
+
+.celebration-section h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: cyan;
+}
+
+.celebration-section p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.celebration-section .celebration-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.celebration-section button {
+  background: rgba(0, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(0, 255, 255, 0.5);
+  padding: 0.7rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  transition: all 0.3s ease;
+}
+
+.celebration-section button:hover {
+  background: rgba(0, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }

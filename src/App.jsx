@@ -1,11 +1,9 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
-import ProgressBar from './components/ProgressBar';
-import TextContent from './components/TextContent';
 import Footer from './components/Footer';
 import EmojiCelebration from './components/EmojiCelebration';
-import './components/EmojiCelebration.css';
+import './index.css';
 
 function App() {
     const [currentStep, setCurrentStep] = useState(0);
