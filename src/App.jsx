@@ -3,6 +3,7 @@ import CameraFeed from './components/CameraFeed';
 import StepContent from './components/StepContent';
 import Footer from './components/Footer';
 import EmojiCelebration from './components/EmojiCelebration';
+import EndOfContent from './components/EndOfContent';
 import './index.css';
 
 function App() {
@@ -226,7 +227,10 @@ function App() {
                     isFullScreen={!useCamera}
                 />
 
-                {/* Show celebration end content if we've reached the end */}
+                {!useCamera && currentStep === steps.length - 1 && (
+                    <EndOfContent />
+                )}
+
                 {showEnding && useCamera && (
                     <div className="celebration-section">
                         <h2>Mission Complete! 🎉</h2>

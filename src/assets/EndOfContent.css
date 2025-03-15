@@ -1,0 +1,90 @@
+.end-of-content {
+    padding: 3rem 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    margin-top: 2rem;
+}
+
+.end-content-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.end-of-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.end-of-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+.end-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.end-button {
+    background: rgba(0, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.end-button:hover {
+    background: rgba(0, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.end-button.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.end-button.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Fix for overflow issues */
+.left-panel.full-width {
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 0;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    position: relative;
+}
+
+.dummy-spacer {
+    height: 20vh;
+    width: 100%;
+}
+
+html {
+    scrollbar-gutter: stable;
+}
