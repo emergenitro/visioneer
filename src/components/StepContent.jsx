@@ -4,12 +4,12 @@ const StepContent = ({ currentStep, steps, isFullScreen }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const step = steps[currentStep];
-    
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
         };
-        
+
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -37,7 +37,7 @@ const StepContent = ({ currentStep, steps, isFullScreen }) => {
 
     return (
         <>
-            <div className={`step-content ${isVisible ? 'visible' : ''}`}>
+            <div className={`step-content ${isVisible ? 'visible' : ''}`} style={{ marginTop: currentStep === steps.length - 1 ? '8rem' : undefined }}>
                 <h1 data-title={step.title.toLowerCase()}>{step.title}</h1>
                 <p dangerouslySetInnerHTML={{ __html: step.content }}></p>
             </div>
@@ -49,8 +49,8 @@ const StepContent = ({ currentStep, steps, isFullScreen }) => {
             {isFullScreen && (
                 <div className="page-indicators">
                     {steps.map((_, index) => (
-                        <div 
-                            key={index} 
+                        <div
+                            key={index}
                             className={`page-indicator ${index === currentStep ? 'active' : ''}`}
                         />
                     ))}
