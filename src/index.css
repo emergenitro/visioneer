@@ -125,10 +125,6 @@ body {
   z-index: 5;
 }
 
-.step-conten:last-child {
-  margin-top: 8rem;
-}
-
 .step-content.visible {
   opacity: 1;
   transform: translateY(0);
@@ -340,7 +336,7 @@ body {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: #3333331a;
+  background: rgba(255, 255, 255, 0.1);
   padding: 20px 30px;
   border-radius: 12px;
   box-shadow:
@@ -881,7 +877,6 @@ button {
     transform: translate(-50%, 0);
   }
 }
-
 
 
 /* Emoji Celebration Styles */
