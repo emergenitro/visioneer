@@ -243,7 +243,6 @@ function App() {
                         <p>You've mastered all the gestures! Time to build your own computer vision project.</p>
                         <div className="celebration-buttons">
                             <button onClick={handleSkip}>View All Instructions</button>
-                            <button onClick={() => window.location.href = "https://github.com/hackclub/visioneer"}>Visit GitHub Repo</button>
                         </div>
                     </div>
                 )}
