@@ -665,13 +665,13 @@ button {
   }
 
   .hack-club-logo.mobile {
+    z-index: 1003;
     display: block;
     width: 120px;
     position: fixed;
     top: 1rem;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
     /* Remove animation and opacity */
     opacity: 1;
     animation: none;
@@ -689,9 +689,9 @@ button {
         rgba(0, 128, 128, 1) 0%,
         rgba(0, 128, 128, 0.8) 60%,
         rgba(0, 128, 128, 0) 100%);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 999;
+    z-index: 1002;
     pointer-events: none;
   }
 
