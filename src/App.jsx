@@ -21,25 +21,25 @@ function App() {
             title: 'visioneer',
             content:
                 'give your computer the gift of vision, get an esp32-s3-eye to see it through',
-            gesture: 'open_hand',
+            gesture: 'open_hand_(🖐)',
         },
         {
             title: 'criteria',
             content:
                 'projects should apply computer vision in unique or unconventional ways. be creative! have fun! and most importantly, make it your own!',
-            gesture: 'thumbs_up',
+            gesture: 'thumbs_up_(👍)',
         },
         {
             title: 'what can i bag?',
             content:
                 `upon successful submission and evaluation of your visioneer project, participants will receive an <a href="https://www.espressif.com/en/products/devkits/esp-eye/overview" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">ESP32-S3-EYE</a>. this is a great way to get started with computer vision and embedded systems!`,
-            gesture: 'peace',
+            gesture: 'peace_(✌️)',
         },
         {
             title: 'how do i submit?',
             content:
                 `submit your project through the visioneer submisison which will be sent on the slack channel! after submitting, you'll need to vote on at least 5 other projects with the link that is sent to your email after submission. remember to include a detailed description of your project and how it uses computer vision. if you have any questions, feel free to reach out on <a href="https://hackclub.slack.com/archives/C082PCKJYMN" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">#visioneer</a>`,
-            gesture: 'rock_on',
+            gesture: 'rock_on_(🤘)',
         },
     ];
 
