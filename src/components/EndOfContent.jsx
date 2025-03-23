@@ -9,7 +9,7 @@ const EndOfContent = () => {
     }, []);
 
     return (
-        <div className="end-of-content ">
+        <div className="end-of-content">
             <div className="end-content-container">
                 <h2>🎉 You've reached the end!</h2>
                 <p>Ready to create your computer vision project?</p>
@@ -20,7 +20,7 @@ const EndOfContent = () => {
                         rel="noopener noreferrer"
                         className="end-button"
                     >
-                        Visit GitHub Repo
+                        Submit Now!
                     </a>
                 </div>
             </div>

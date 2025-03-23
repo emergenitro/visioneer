@@ -115,7 +115,7 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 2rem;
-  margin-top: 2rem;
+  margin-top: 8rem;
   opacity: 0;
   /* Start invisible */
   transform: translateY(20px);
@@ -1030,6 +1030,7 @@ button {
   align-items: center;
   min-height: 300px;
   margin-top: 2rem;
+  z-index: 999;
 }
 
 .end-content-container {

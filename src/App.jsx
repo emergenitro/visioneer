@@ -38,7 +38,7 @@ function App() {
         {
             title: 'how do i submit?',
             content:
-                `just send a pull request to the <a href="https://github.com/hackclub/visioneer" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">visioneer github repo</a> with your project! make sure to add it to the projects file and include a README explaining your project in detail. if you have any questions, feel free to reach out on <a href="https://hackclub.slack.com/archives/C082PCKJYMN" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">#visioneer</a>`,
+                `submit your project through the <a href="https://forms.hackclub.com/visioneer" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">visioneer submission form</a>! after submitting, you'll need to vote on at least 5 other projects with the link that is sent to your email after submission. remember to include a detailed description of your project and how it uses computer vision. if you have any questions, feel free to reach out on <a href="https://hackclub.slack.com/archives/C082PCKJYMN" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">#visioneer</a>`,
             gesture: 'rock_on',
         },
     ];
