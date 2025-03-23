@@ -38,7 +38,7 @@ function App() {
         {
             title: 'how do i submit?',
             content:
-                `submit your project through the <a href="https://forms.hackclub.com/visioneer" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">visioneer submission form</a>! after submitting, you'll need to vote on at least 5 other projects with the link that is sent to your email after submission. remember to include a detailed description of your project and how it uses computer vision. if you have any questions, feel free to reach out on <a href="https://hackclub.slack.com/archives/C082PCKJYMN" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">#visioneer</a>`,
+                `submit your project through the visioneer submisison which will be sent on the slack channel! after submitting, you'll need to vote on at least 5 other projects with the link that is sent to your email after submission. remember to include a detailed description of your project and how it uses computer vision. if you have any questions, feel free to reach out on <a href="https://hackclub.slack.com/archives/C082PCKJYMN" target="_blank" rel="noopener noreferrer" style="text-decoration: underline">#visioneer</a>`,
             gesture: 'rock_on',
         },
     ];
