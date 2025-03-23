@@ -26,3 +26,4 @@ dist-ssr
 .vercel
 
 node_modules
+main.py

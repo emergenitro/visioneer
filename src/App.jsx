@@ -4,6 +4,7 @@ import StepContent from './components/StepContent';
 import Footer from './components/Footer';
 import EmojiCelebration from './components/EmojiCelebration';
 import EndOfContent from './components/EndOfContent';
+import './components/EndOfContent.css';
 import './index.css';
 
 function App() {
@@ -82,17 +83,22 @@ function App() {
             if (!(currentStep === 0 && e.deltaY < 0) && Math.abs(e.deltaY) > 10) {
                 setIsScrolling(true);
                 if (e.deltaY > 0 && currentStep < steps.length - 1) {
+                    // Prevent default scrolling behavior when navigating between steps
+                    e.preventDefault();
                     setCurrentStep(prev => prev + 1);
                 } else if (e.deltaY < 0 && currentStep > 0) {
+                    e.preventDefault();
                     setCurrentStep(prev => prev - 1);
                 }
+                // For last step, allow normal scrolling to see the EndOfContent component
                 setTimeout(() => setIsScrolling(false), 500);
             }
         }
     }, [currentStep, useCamera, isScrolling, steps.length, isMobile]);
 
     useEffect(() => {
-        window.addEventListener('wheel', handleScroll);
+        // Use a non-passive event listener to allow preventDefault
+        window.addEventListener('wheel', handleScroll, { passive: false });
         return () => window.removeEventListener('wheel', handleScroll);
     }, [handleScroll]);
 
@@ -113,13 +119,17 @@ function App() {
             }
             setUseCamera(false);
             document.body.style.overflow = 'auto';
+        } else if (!useCamera) {
+            // In desktop text-only mode, allow scrolling
+            document.body.style.overflow = 'auto';
         } else {
+            // In camera mode, prevent scrolling
             document.body.style.overflow = 'hidden';
         }
         return () => {
             document.body.style.overflow = 'hidden';
         };
-    }, [isMobile, cameraCleanup]);
+    }, [isMobile, cameraCleanup, useCamera]);
 
     useEffect(() => {
         const dustContainer = document.createElement('div');
@@ -227,10 +237,7 @@ function App() {
                     isFullScreen={!useCamera}
                 />
 
-                {!useCamera && currentStep === steps.length - 1 && (
-                    <EndOfContent />
-                )}
-
+                {/* Show celebration end content if we've reached the end */}
                 {showEnding && useCamera && (
                     <div className="celebration-section">
                         <h2>Mission Complete! 🎉</h2>
@@ -240,6 +247,10 @@ function App() {
                             <button onClick={() => window.location.href = "https://github.com/hackclub/visioneer"}>Visit GitHub Repo</button>
                         </div>
                     </div>
+                )}
+
+                {!useCamera && currentStep === steps.length - 1 && (
+                    <EndOfContent />
                 )}
 
                 <Footer
