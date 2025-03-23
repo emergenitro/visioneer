@@ -4,7 +4,6 @@ import StepContent from './components/StepContent';
 import Footer from './components/Footer';
 import EmojiCelebration from './components/EmojiCelebration';
 import EndOfContent from './components/EndOfContent';
-import './components/EndOfContent.css';
 import './index.css';
 
 function App() {
