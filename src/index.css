@@ -558,6 +558,7 @@ button {
 
 /* Credits footer styling */
 .credits-footer {
+  z-index: 10000;
   position: fixed;
   bottom: 0;
   left: 0;
