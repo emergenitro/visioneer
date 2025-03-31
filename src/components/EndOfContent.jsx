@@ -15,12 +15,12 @@ const EndOfContent = () => {
                 <p>Ready to create your computer vision project?</p>
                 <div className="end-buttons">
                     <a
-                        href="https://hackclub.slack.com/archives/C082PCKJYMN"
+                        href="https://forms.hackclub.com/visioneer"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="end-button"
                     >
-                        Join the slack now!
+                        Submit now!
                     </a>
                 </div>
             </div>
