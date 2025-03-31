@@ -249,13 +249,13 @@ function CameraFeed({ onGestureDetected, currentStep, steps, onCameraMount }) {
 
     const detectGesture = (gesture, keypoints) => {
         switch (gesture) {
-            case 'open_hand_(🖐)':
+            case 'open_hand (🖐)':
                 return detectOpenHandGesture(keypoints);
-            case 'thumbs_up_(👍)':
+            case 'thumbs_up (👍)':
                 return detectThumbsUpGesture(keypoints);
-            case 'peace_(✌️)':
+            case 'peace (✌️)':
                 return detectVictoryGesture(keypoints);
-            case 'rock_on_(🤘)':
+            case 'rock_on (🤘)':
                 return detectRockOnGesture(keypoints);
             default:
                 return false;
